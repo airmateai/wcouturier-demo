@@ -976,6 +976,8 @@ html.dark .dark-toggle::after{left:19px;}
             <div class="stat-card" style="animation:slideUp .3s ease both .14s"><div class="stat-val" id="dash-s3">0</div><div class="stat-label">Clients in Book</div><div class="stat-trend" id="dash-s3t">—</div></div>
             <div class="stat-card" style="animation:slideUp .3s ease both .21s"><div class="stat-val" id="dash-s4">AED 0</div><div class="stat-label">Revenue This Month</div><div class="stat-trend" id="dash-s4t">—</div></div>
 
+          </div><!-- /stats-grid -->
+
           <!-- ══ WOW: AI LIVE DEMO WIDGET ══════════════════════════════ -->
           <div id="ai-live-demo" style="margin-bottom:18px;border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,58,.3);box-shadow:0 8px 40px rgba(0,0,0,.18);background:#0a0d14;">
             <!-- Header -->
@@ -1866,6 +1868,7 @@ const APPOINTMENTS = [
   {id:'a5',client:'Faisal Al Zaabi',type:'consultation',date:'2026-06-01',time:'12:00',branch:'W Couturier · The Palace',status:'pending',notes:'Tuxedo consultation + fabric selection'},
   {id:'a6',client:'Sultan Al Maktoum',type:'fitting',date:'2026-06-03',time:'09:00',branch:'W Couturier · The Palace',status:'confirmed',notes:'PRIVATE — no other appointments this slot'},
 ];
+window.APPOINTMENTS = APPOINTMENTS;
 
 const ORDERS = [
   {id:'o1',client:'Abdullah Al Mansouri',clientId:'c1',garment:'Bespoke 3-Piece Suit',fabric:'Loro Piana — Midnight Navy',status:'fitting',branch:'W Couturier · The Palace',dueDate:'2026-05-28',price:14500,notes:'Pick up at The Palace concierge. Monogram: A.M.'},
@@ -1877,6 +1880,7 @@ const ORDERS = [
   {id:'o7',client:'Robert Blackwood',clientId:'c8',garment:'City Suit',fabric:'Vitale Barberis — Medium Blue Windowpane',status:'delivered',branch:'Lapels Bespoke · The Palace',dueDate:'2026-05-15',price:12800,notes:'Delivered. Invoice paid.'},
   {id:'o8',client:'Hamdan Al Nuaimi',clientId:'c7',garment:'Black Tie Tuxedo',fabric:'Scabal — Pure Black Super 150s',status:'fitting',branch:'Lapels Bespoke · The Palace',dueDate:'2026-05-30',price:9500,notes:'Second fitting booked May 30 at 15:00.'},
 ];
+window.ORDERS = ORDERS;
 
 const CLIENTS = [
   {id:'c1',name:'Abdullah Al Mansouri',phone:'+971 50 234 5678',email:'abdullah@almansouri.ae',branch:'W Couturier · The Palace',vip:true,
@@ -1912,6 +1916,7 @@ const CLIENTS = [
    notes:'New York hedge fund. 2 visits/year. Requests rush 8-day service.',
    orders:3,totalSpend:'AED 38,400'},
 ];
+window.CLIENTS = CLIENTS;
 
 const FABRICS = [
   {id:'f-001', name:'Super 150s Merino Wool', supplier:'Loro Piana', color:'Navy', qty:'25m', unit:'m', reorder:5, price:180},
@@ -1934,6 +1939,7 @@ const INVOICES = [
   {id:'inv3',invoice_number:'INV-2026-003',client:'Khalid Al Rashidi',type:'quote',branch:'Lapels Bespoke · The Palace',date:'2026-05-18',issue_date:'2026-05-18',dueDate:'2026-06-02',due_date:'2026-06-02',lines:[{desc:'Wedding Suit — Holland & Sherry Ivory',qty:1,unitPrice:14000,total:14000},{desc:'Bespoke Kandura — White Linen',qty:1,unitPrice:8000,total:8000}],subtotal:22000,vatEnabled:true,vatRate:0.05,vat:1100,total:23100,notes:'Wedding June 15. Rush service.',status:'sent'},
   {id:'inv4',invoice_number:'INV-2026-004',client:'Omar Hassan',type:'invoice',branch:'W Couturier · The Palace',date:'2026-05-20',issue_date:'2026-05-20',dueDate:'2026-05-23',due_date:'2026-05-23',lines:[{desc:'Kandura — Eid Collection Swiss Cotton',qty:1,unitPrice:3800,total:3800}],subtotal:3800,vatEnabled:true,vatRate:0.05,vat:190,total:3990,notes:'Eid collection. Ready for pickup.',status:'paid'},
 ];
+window.INVOICES = INVOICES;
 
 const TPV_PRODUCTS = [
   {id:'p-001', name:'Traje a medida', price:4500, cat:'suits'},
