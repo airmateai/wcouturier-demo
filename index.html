@@ -5857,6 +5857,7 @@ function closeSplash(){
   if(!splash) return;
   splash.style.transition='opacity .5s ease';
   splash.style.opacity='0';
+  splash.style.pointerEvents='none';
   setTimeout(function(){ splash.style.display='none'; splash.style.opacity=''; }, 500);
   // Trigger dashboard render
   setTimeout(function(){
@@ -5875,6 +5876,97 @@ window.doLogin = function(){
   showSplash();
 };
 // ═════════════════════════════════════════════════════════════════════
+
+
+// ══ LOGIN ANIMATIONS ═════════════════════════════════════════════════════
+(function(){
+  function initLogin(){
+    // Sync logos
+    var logoSrc = document.querySelector('.sidebar-brand img')?.src || document.querySelector('.login-box-logo img')?.src || '';
+    var l1=document.getElementById('login-logo-src'); if(l1&&logoSrc) l1.src=logoSrc;
+    var l2=document.getElementById('login-logo-src2'); if(l2&&logoSrc) l2.src=logoSrc;
+
+    // Animate in
+    setTimeout(function(){
+      ['ll-logo','ll-headline','ll-stats','ll-feats','ll-box','ll-divider'].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){el.style.opacity='1';el.style.transform='translateY(0) translateX(0)';}
+      });
+    }, 120);
+
+    // Count up stats
+    loginCount('ls-c1', 47, 1600);
+    loginCount('ls-c2', 12, 1800);
+    loginCount('ls-c3', 18, 1900);
+    loginCountAED('ls-c4', 143820, 2200);
+
+    // Canvas particles
+    initParticles();
+  }
+
+  function loginCount(id, target, duration){
+    var el=document.getElementById(id); if(!el) return;
+    var start=0,steps=35,step=Math.ceil(target/steps),interval=duration/steps;
+    setTimeout(function(){
+      var t=setInterval(function(){start=Math.min(start+step,target);el.textContent=start;if(start>=target)clearInterval(t);},interval);
+    }, 600);
+  }
+  function loginCountAED(id, target, duration){
+    var el=document.getElementById(id); if(!el) return;
+    var start=0,steps=35,step=Math.ceil(target/steps),interval=duration/steps;
+    setTimeout(function(){
+      var t=setInterval(function(){start=Math.min(start+step,target);el.textContent='AED '+start.toLocaleString();if(start>=target)clearInterval(t);},interval);
+    }, 800);
+  }
+
+  function initParticles(){
+    var canvas=document.getElementById('login-canvas'); if(!canvas) return;
+    var ctx=canvas.getContext('2d');
+    canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
+    var particles=[];
+    for(var i=0;i<55;i++){
+      particles.push({
+        x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+        r:Math.random()*1.5+0.3, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
+        o:Math.random()*.5+.1
+      });
+    }
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(function(p){
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>canvas.width) p.vx*=-1;
+        if(p.y<0||p.y>canvas.height) p.vy*=-1;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(184,150,58,'+p.o+')';
+        ctx.fill();
+      });
+      // Draw lines between close particles
+      for(var i=0;i<particles.length;i++){
+        for(var j=i+1;j<particles.length;j++){
+          var dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+          var dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<120){
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x,particles[i].y);
+            ctx.lineTo(particles[j].x,particles[j].y);
+            ctx.strokeStyle='rgba(184,150,58,'+(0.06*(1-dist/120))+')';
+            ctx.lineWidth=0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  document.readyState==='loading'
+    ? document.addEventListener('DOMContentLoaded', initLogin)
+    : initLogin();
+})();
+// ═════════════════════════════════════════════════════════════════════════
 
 </script>
 
