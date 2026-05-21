@@ -1048,6 +1048,73 @@ html.dark .dark-toggle::after{left:19px;}
             </div>
           </div>
 
+
+          <!-- ══ ROI CALCULATOR ══════════════════════════════════════════ -->
+          <div id="roi-calc-widget" style="margin-top:4px;border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,58,.25);background:linear-gradient(135deg,#0a0d14 0%,#0f1420 100%);">
+            <div style="padding:16px 22px 12px;border-bottom:1px solid rgba(184,150,58,.15);display:flex;align-items:center;gap:12px;">
+              <span style="font-size:20px;">💰</span>
+              <div>
+                <div style="color:#fff;font-weight:800;font-size:15px;letter-spacing:-.01em;">Your ROI Calculator</div>
+                <div style="color:rgba(255,255,255,.35);font-size:12px;">See exactly how much Airmate saves your business every month</div>
+              </div>
+            </div>
+            <div style="padding:20px 22px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+              <!-- Inputs -->
+              <div>
+                <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">Your Current Situation</div>
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                  <div>
+                    <label style="font-size:12px;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;">Receptionist monthly salary (AED)</label>
+                    <input id="roi-salary" type="number" value="4500" oninput="calcROI()"
+                      style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;outline:none;">
+                  </div>
+                  <div>
+                    <label style="font-size:12px;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;">Clients per month</label>
+                    <input id="roi-clients" type="number" value="60" oninput="calcROI()"
+                      style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;outline:none;">
+                  </div>
+                  <div>
+                    <label style="font-size:12px;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;">Average order value (AED)</label>
+                    <input id="roi-aov" type="number" value="8000" oninput="calcROI()"
+                      style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;outline:none;">
+                  </div>
+                  <div>
+                    <label style="font-size:12px;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;">% of enquiries never replied to</label>
+                    <input id="roi-missed" type="number" value="25" min="0" max="100" oninput="calcROI()"
+                      style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;outline:none;">
+                  </div>
+                </div>
+              </div>
+              <!-- Results -->
+              <div>
+                <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">With Airmate</div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;">
+                    <div style="font-size:11px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Staff cost saved / month</div>
+                    <div id="roi-r1" style="font-size:26px;font-weight:800;color:#4ade80;">AED 4,500</div>
+                  </div>
+                  <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;">
+                    <div style="font-size:11px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Revenue recovered (missed enquiries)</div>
+                    <div id="roi-r2" style="font-size:26px;font-weight:800;color:#60a5fa;">AED 120,000</div>
+                  </div>
+                  <div style="background:rgba(184,150,58,.1);border:1px solid rgba(184,150,58,.35);border-radius:10px;padding:14px 16px;">
+                    <div style="font-size:11px;color:rgba(184,150,58,.7);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Total ROI — first month</div>
+                    <div id="roi-r3" style="font-size:32px;font-weight:900;color:#b8963a;letter-spacing:-.02em;">AED 124,500</div>
+                    <div id="roi-r4" style="font-size:12px;color:rgba(255,255,255,.35);margin-top:4px;">vs. Airmate cost: AED 180/mo</div>
+                  </div>
+                  <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px 16px;text-align:center;">
+                    <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:2px;">Every month WITHOUT Airmate costs you</div>
+                    <div id="roi-r5" style="font-size:22px;font-weight:800;color:#f87171;">AED 124,500</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:12px 22px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+              <div style="font-size:12px;color:rgba(255,255,255,.25);font-style:italic;">* Based on industry averages for Dubai luxury retail. 24/7 availability captures after-hours enquiries missed by human staff.</div>
+              <div id="roi-payback" style="font-size:13px;font-weight:700;color:#b8963a;">Payback in &lt; 1 day</div>
+            </div>
+          </div>
+
           <div class="card">
             <div class="card-hd"><span class="card-hd-title">Recent Activity</span></div>
             <div class="activity-list" id="dash-recent-activity">
@@ -5686,6 +5753,35 @@ setTimeout(function(){
   if(el) startWADemo();
 }, 1800);
 // ═══════════════════════════════════════════════════════════════════════
+
+
+// ══ ROI CALCULATOR ═══════════════════════════════════════════════════════
+function calcROI(){
+  var salary = parseFloat(document.getElementById('roi-salary')?.value)||0;
+  var clients = parseFloat(document.getElementById('roi-clients')?.value)||0;
+  var aov = parseFloat(document.getElementById('roi-aov')?.value)||0;
+  var missed = parseFloat(document.getElementById('roi-missed')?.value)||0;
+  var airmateCost = 180;
+
+  var staffSaved = salary;
+  var recoveredRevenue = Math.round(clients * (missed/100) * aov);
+  var totalROI = staffSaved + recoveredRevenue;
+  var fmt = function(n){ return 'AED '+Math.round(n).toLocaleString(); };
+
+  var r1=document.getElementById('roi-r1'); if(r1) r1.textContent=fmt(staffSaved);
+  var r2=document.getElementById('roi-r2'); if(r2) r2.textContent=fmt(recoveredRevenue);
+  var r3=document.getElementById('roi-r3'); if(r3) r3.textContent=fmt(totalROI);
+  var r4=document.getElementById('roi-r4'); if(r4) r4.textContent='vs. Airmate cost: AED '+airmateCost+'/mo';
+  var r5=document.getElementById('roi-r5'); if(r5) r5.textContent=fmt(totalROI);
+
+  var pb=document.getElementById('roi-payback');
+  if(pb){
+    var days = totalROI>0 ? Math.round((airmateCost/totalROI)*30) : 0;
+    pb.textContent = days<=1 ? 'Payback in < 1 day' : 'Payback in '+days+' days';
+  }
+}
+setTimeout(calcROI, 500);
+// ═════════════════════════════════════════════════════════════════════════
 
 </script>
 
