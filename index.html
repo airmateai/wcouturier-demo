@@ -754,6 +754,17 @@ html.dark .dark-toggle::after{left:19px;}
 .cdp-notes{background:var(--bg);border-radius:8px;padding:12px;font-size:12px;color:var(--txt2);line-height:1.5;border-left:3px solid var(--border);}
 .cdp-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:8px;}
 .cdp-status-sel{flex:1;border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;background:var(--surface);color:var(--txt);}
+
+/* WA Demo Widget */
+@keyframes liveBlip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+@keyframes waDotBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.wa-dot{width:7px;height:7px;border-radius:50%;background:#25d366;animation:waDotBounce 1.2s infinite ease-in-out;}
+@keyframes waMsgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.wa-msg{animation:waMsgIn .3s ease both;}
+@keyframes crmFieldIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+.crm-field-row{animation:crmFieldIn .35s ease both;}
+@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init("i4iBVVP-BkUOOwBE9");</script>
@@ -964,6 +975,62 @@ html.dark .dark-toggle::after{left:19px;}
             <div class="stat-card" style="animation:slideUp .3s ease both .07s"><div class="stat-val" id="dash-s2">0</div><div class="stat-label">Active Orders</div><div class="stat-trend" id="dash-s2t">—</div></div>
             <div class="stat-card" style="animation:slideUp .3s ease both .14s"><div class="stat-val" id="dash-s3">0</div><div class="stat-label">Clients in Book</div><div class="stat-trend" id="dash-s3t">—</div></div>
             <div class="stat-card" style="animation:slideUp .3s ease both .21s"><div class="stat-val" id="dash-s4">AED 0</div><div class="stat-label">Revenue This Month</div><div class="stat-trend" id="dash-s4t">—</div></div>
+
+          <!-- ══ WOW: AI LIVE DEMO WIDGET ══════════════════════════════ -->
+          <div id="ai-live-demo" style="margin-bottom:18px;border-radius:14px;overflow:hidden;border:1px solid rgba(184,150,58,.3);box-shadow:0 8px 40px rgba(0,0,0,.18);background:#0a0d14;">
+            <!-- Header -->
+            <div style="padding:14px 20px;background:linear-gradient(135deg,#0a0d14,#141820);border-bottom:1px solid rgba(184,150,58,.2);display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#25d366;box-shadow:0 0 8px #25d36688;animation:liveBlip 1.4s infinite;"></div>
+                <span style="color:#fff;font-weight:700;font-size:14px;letter-spacing:.02em;">AI Receptionist — Live</span>
+                <span style="background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);color:#25d366;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:.04em;">WORKING NOW</span>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,.35);font-style:italic;">Handling client bookings 24/7 — no staff needed</div>
+            </div>
+            <!-- Chat + Stats side by side -->
+            <div style="display:grid;grid-template-columns:1fr 320px;gap:0;">
+              <!-- WhatsApp Chat -->
+              <div style="padding:20px;border-right:1px solid rgba(255,255,255,.06);">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                  <div style="background:#1a2e1a;border-radius:50%;width:36px;height:36px;display:grid;place-items:center;font-size:18px;">📱</div>
+                  <div>
+                    <div style="color:#fff;font-size:13px;font-weight:700;">WhatsApp Business</div>
+                    <div style="color:#25d366;font-size:11px;">● Online · Typically replies instantly</div>
+                  </div>
+                </div>
+                <div id="wa-chat-messages" style="display:flex;flex-direction:column;gap:10px;min-height:260px;"></div>
+                <div id="wa-typing-indicator" style="display:none;padding:8px 14px;background:#1a2e1a;border-radius:18px;width:fit-content;margin-top:8px;">
+                  <div style="display:flex;gap:4px;align-items:center;">
+                    <div class="wa-dot" style="animation-delay:0s"></div>
+                    <div class="wa-dot" style="animation-delay:.15s"></div>
+                    <div class="wa-dot" style="animation-delay:.3s"></div>
+                    <span style="color:#25d366;font-size:11px;margin-left:6px;">AI Receptionist is typing...</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Right panel: CRM capture -->
+              <div style="padding:20px;background:rgba(255,255,255,.02);">
+                <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">CRM Auto-Capture</div>
+                <div id="crm-capture-fields" style="display:flex;flex-direction:column;gap:10px;"></div>
+                <div id="crm-booking-confirmed" style="display:none;margin-top:16px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);border-radius:10px;padding:14px;text-align:center;">
+                  <div style="font-size:24px;margin-bottom:6px;">✅</div>
+                  <div style="color:#4ade80;font-weight:700;font-size:14px;margin-bottom:4px;">Appointment Confirmed</div>
+                  <div style="color:rgba(255,255,255,.5);font-size:12px;" id="booking-confirmed-detail"></div>
+                  <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.3);">Saved to CRM · Calendar updated · No staff involved</div>
+                </div>
+                <div id="crm-savings-counter" style="display:none;margin-top:16px;background:rgba(184,150,58,.08);border:1px solid rgba(184,150,58,.2);border-radius:10px;padding:14px;text-align:center;">
+                  <div style="color:rgba(255,255,255,.4);font-size:11px;margin-bottom:4px;">COST SAVED THIS INTERACTION</div>
+                  <div style="color:#b8963a;font-size:28px;font-weight:800;" id="savings-aed">AED 0</div>
+                  <div style="color:rgba(255,255,255,.3);font-size:11px;margin-top:4px;">vs. hiring a receptionist</div>
+                </div>
+              </div>
+            </div>
+            <!-- Replay button -->
+            <div style="padding:12px 20px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:12px;color:rgba(255,255,255,.3);">This happens automatically, every day, with every client — while you sleep.</div>
+              <button onclick="startWADemo()" style="background:rgba(184,150,58,.15);border:1px solid rgba(184,150,58,.3);color:#b8963a;font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;cursor:pointer;font-family:inherit;letter-spacing:.03em;">↺ Replay</button>
+            </div>
+          </div>
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
@@ -1938,7 +2005,8 @@ let _clientsFilter = '';
 
 // ══ HELPERS ══
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+function showToast(msg, _toastColor){
+  var _tc = _toastColor || null;const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 function openModal(html){
   document.getElementById('modal-box').innerHTML = html;
   const ov = document.getElementById('modal-overlay');
@@ -5451,6 +5519,174 @@ function renderDashboard() {
     }
   });
 })();
+
+// Live notification stream (simulated activity)
+var _liveNotifQueue = [
+  {delay:9000,  msg:'📩 New WhatsApp — Khalid Al Rashidi: "Is my suit ready?"', color:'#25d366'},
+  {delay:18000, msg:'📅 New booking: Faisal Al Zaabi · Consultation · Fri 23 May · 12:00', color:'#b8963a'},
+  {delay:27000, msg:'💳 Payment received: James Thornton · AED 13,440 · Invoice INV-2026-002', color:'#4ade80'},
+  {delay:36000, msg:'👔 Order ready: Omar Hassan — Kandura Eid · Awaiting pickup', color:'#60a5fa'},
+];
+setTimeout(function(){
+  _liveNotifQueue.forEach(function(n){
+    setTimeout(function(){
+      if(typeof showToast==='function') showToast(n.msg, n.color);
+    }, n.delay);
+  });
+}, 2000);
+
+
+function animateCountUp(el, target, prefix, suffix, duration){
+  var start=0; var step=Math.ceil(target/40);
+  var timer=setInterval(function(){
+    start+=step; if(start>=target){start=target;clearInterval(timer);}
+    el.textContent=(prefix||'')+start.toLocaleString()+(suffix||'');
+  }, duration/40);
+}
+// Patch renderDashboard to animate numbers
+var _origRenderDash = renderDashboard;
+renderDashboard = function(){
+  _origRenderDash.apply(this,arguments);
+  setTimeout(function(){
+    var s1=document.getElementById('dash-s1');
+    var s2=document.getElementById('dash-s2');
+    var s3=document.getElementById('dash-s3');
+    var s4=document.getElementById('dash-s4');
+    if(s1&&!isNaN(parseInt(s1.textContent))) animateCountUp(s1,parseInt(s1.textContent)||0,'','',600);
+    if(s2&&!isNaN(parseInt(s2.textContent))) animateCountUp(s2,parseInt(s2.textContent)||0,'','',700);
+    if(s3&&!isNaN(parseInt(s3.textContent))) animateCountUp(s3,parseInt(s3.textContent)||0,'','',800);
+    if(s4){
+      var raw=s4.textContent.replace('AED','').replace(/,/g,'').trim();
+      var val=parseInt(raw)||0;
+      if(val>0) animateCountUp(s4,val,'AED ','',1000);
+    }
+  },50);
+};
+
+
+// ══ WA LIVE DEMO ═══════════════════════════════════════════════════════
+var _waDemoTimer = null;
+function startWADemo(){
+  // Reset
+  if(_waDemoTimer) clearTimeout(_waDemoTimer);
+  document.getElementById('wa-chat-messages').innerHTML='';
+  document.getElementById('crm-capture-fields').innerHTML='';
+  document.getElementById('crm-booking-confirmed').style.display='none';
+  document.getElementById('crm-savings-counter').style.display='none';
+  document.getElementById('wa-typing-indicator').style.display='none';
+
+  var msgs = [
+    {side:'client', text:'Hi! I\'d like to book a bespoke suit consultation 🙏', delay:800},
+    {side:'bot',    text:'Welcome to Lapels Bespoke! We\'d love to have you in. 🤵\n\nMay I have your name and which branch you\'d prefer — The Palace or Business Bay?', delay:2200, typing:1400},
+    {side:'client', text:'Abdullah Al Farsi — The Palace please', delay:4800},
+    {side:'bot',    text:'Perfect, Abdullah! 👌\n\nWe have availability this week:\n\n• Thursday 22 May · 11:00\n• Thursday 22 May · 15:30\n• Friday 23 May · 10:00\n\nWhich works best for you?', delay:7000, typing:1600, crm:[
+      {label:'Client', value:'Abdullah Al Farsi', icon:'👤'},
+      {label:'Branch', value:'The Palace · Downtown', icon:'📍'},
+    ]},
+    {side:'client', text:'Thursday at 11 works perfectly', delay:10500},
+    {side:'bot',    text:'✅ Confirmed!\n\n📅 Thursday 22 May · 11:00\n📍 Lapels Bespoke · The Palace\n👔 Bespoke Consultation\n\nOur master tailor will have fabric samples ready. See you then, Abdullah!', delay:12800, typing:1400, crm:[
+      {label:'Service', value:'Bespoke Consultation', icon:'👔'},
+      {label:'Date', value:'Thu 22 May · 11:00', icon:'📅'},
+      {label:'Status', value:'CONFIRMED ✓', icon:'🟢', gold:true},
+    ], confirm:true},
+  ];
+
+  var cumDelay = 0;
+  msgs.forEach(function(msg){
+    cumDelay += msg.delay;
+    (function(m, d){
+      _waDemoTimer = setTimeout(function(){
+        // Show typing indicator before bot messages
+        if(m.side==='bot' && m.typing){
+          document.getElementById('wa-typing-indicator').style.display='block';
+          setTimeout(function(){
+            document.getElementById('wa-typing-indicator').style.display='none';
+            addWAMessage(m);
+            if(m.crm) addCRMFields(m.crm);
+            if(m.confirm) showBookingConfirmed();
+          }, m.typing);
+        } else {
+          addWAMessage(m);
+          if(m.crm) addCRMFields(m.crm);
+        }
+      }, d);
+    })(msg, cumDelay);
+  });
+}
+
+function addWAMessage(m){
+  var isBot = m.side==='bot';
+  var wrap = document.getElementById('wa-chat-messages');
+  var div = document.createElement('div');
+  div.className = 'wa-msg';
+  div.style.cssText = 'display:flex;justify-content:'+(isBot?'flex-start':'flex-end')+';';
+  var bubble = document.createElement('div');
+  bubble.style.cssText = [
+    'max-width:82%',
+    'padding:10px 14px',
+    'border-radius:'+(isBot?'4px 16px 16px 16px':'16px 4px 16px 16px'),
+    'font-size:13px',
+    'line-height:1.55',
+    'white-space:pre-wrap',
+    'color:#fff',
+    'background:'+(isBot?'#1a2e1a':'#1a3040'),
+    'border:1px solid '+(isBot?'rgba(37,211,102,.2)':'rgba(59,130,246,.2)'),
+    'box-shadow:0 2px 10px rgba(0,0,0,.3)',
+  ].join(';');
+  bubble.textContent = m.text;
+  div.appendChild(bubble);
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function addCRMFields(fields){
+  var wrap = document.getElementById('crm-capture-fields');
+  fields.forEach(function(f, i){
+    var row = document.createElement('div');
+    row.className = 'crm-field-row';
+    row.style.cssText = 'animation-delay:'+(i*0.12)+'s;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;';
+    row.innerHTML = '<span style="font-size:16px">'+f.icon+'</span>'
+      +'<div><div style="font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1px">'+f.label+'</div>'
+      +'<div style="font-size:13px;font-weight:700;color:'+(f.gold?'#b8963a':'#fff')+'">'+f.value+'</div></div>';
+    wrap.appendChild(row);
+  });
+}
+
+function showBookingConfirmed(){
+  var conf = document.getElementById('crm-booking-confirmed');
+  var detail = document.getElementById('booking-confirmed-detail');
+  if(detail) detail.textContent = 'Abdullah Al Farsi · Thu 22 May 11:00 · The Palace';
+  conf.style.display='block';
+  // Add to real appointments data so calendar updates
+  if(window.APPOINTMENTS){
+    var already = window.APPOINTMENTS.find(function(a){ return a.client==='Abdullah Al Farsi'; });
+    if(!already){
+      window.APPOINTMENTS.push({id:'wa-live-1',client:'Abdullah Al Farsi',type:'consultation',date:'2026-05-22',time:'11:00',branch:'Lapels Bespoke · The Palace',status:'confirmed',notes:'Booked via WhatsApp AI — fabric samples requested'});
+      if(typeof renderDashboard==='function') setTimeout(renderDashboard,300);
+      if(typeof renderAppts==='function') setTimeout(renderAppts,300);
+      if(typeof updateBadges==='function') setTimeout(updateBadges,300);
+    }
+  }
+  setTimeout(function(){
+    var sav = document.getElementById('crm-savings-counter');
+    var savEl = document.getElementById('savings-aed');
+    sav.style.display='block';
+    // Animate AED counter
+    var target=185;var cur=0;
+    var timer=setInterval(function(){
+      cur+=7;if(cur>=target){cur=target;clearInterval(timer);}
+      if(savEl) savEl.textContent='AED '+cur;
+    },30);
+  }, 1200);
+}
+
+// Auto-start when dashboard is visible
+setTimeout(function(){
+  var el=document.getElementById('ai-live-demo');
+  if(el) startWADemo();
+}, 1800);
+// ═══════════════════════════════════════════════════════════════════════
+
 </script>
 
 </body>
