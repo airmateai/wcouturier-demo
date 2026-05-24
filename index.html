@@ -2399,38 +2399,48 @@ function renderCalendar() {
 }
 
 function openSuitDesigner(orderId){
-  _suit.orderId=orderId;
-  // Inject lapel images (base64)
-  ['notch','peak','shawl'].forEach(k=>{
-    const el=document.getElementById('lapel-img-'+k);
-    if(el&&LAPEL_IMGS[k]) el.src=LAPEL_IMGS[k];
-  });
-  // Inject detail images (vent, trouser, sleeve, pocket)
-  [['vent','none'],['vent','single'],['vent','double'],
-   ['trouser','flat'],['trouser','single'],['trouser','double'],
-   ['pocket','jetted'],['pocket','flap'],['pocket','patch'],
-   ['sleeve','1'],['sleeve','2'],['sleeve','3'],['sleeve','4']
-  ].forEach(([type,val])=>{
-    const el=document.getElementById('detail-img-'+type+'-'+val);
-    const key=type+'-'+val;
-    if(el&&DETAIL_IMGS[key]) el.src=DETAIL_IMGS[key];
-  });
-  // Render swatches
-  document.getElementById('suit-swatches').innerHTML=SUIT_FABRICS.map((f,i)=>`
-    <div class="suit-swatch${i===_suit.fabric?' active':''}" style="background:${f.main}" title="${f.name}" onclick="setSuitFabric(${i})">
-      <img src="${f.img}" alt="${f.name}" onerror="this.style.display='none'">
-      <span class="suit-swatch-label">${f.name}</span>
-    </div>`).join('');
-  document.getElementById('suit-lining-swatches').innerHTML=SUIT_LININGS.map((l,i)=>`
-    <div class="suit-swatch${i===_suit.lining?' active':''}" style="background:${l.color};border:${l.color==='#fffde7'?'1px solid #ddd':'none'}" title="${l.name}" onclick="setSuitLining(${i})">
-      <span class="suit-swatch-label">${l.name}</span>
-    </div>`).join('');
-  document.getElementById('suit-tie-swatches').innerHTML=SUIT_TIES.map((t,i)=>`
-    <div class="suit-swatch${i===_suit.tie?' active':''}" style="background:${t.color};border:${t.color==='transparent'?'2px dashed #ccc':'none'}" title="${t.name}" onclick="setSuitTie(${i})">
-      <span class="suit-swatch-label">${t.name}</span>
-    </div>`).join('');
-  updateSuitPreview();
-  document.getElementById('suit-overlay').classList.add('open');
+  try{_suit.orderId=orderId;}catch(e){}
+  try{
+    ['notch','peak','shawl'].forEach(k=>{
+      const el=document.getElementById('lapel-img-'+k);
+      if(el&&typeof LAPEL_IMGS!=='undefined'&&LAPEL_IMGS[k]) el.src=LAPEL_IMGS[k];
+    });
+  }catch(e){}
+  try{
+    [['vent','none'],['vent','single'],['vent','double'],
+     ['trouser','flat'],['trouser','single'],['trouser','double'],
+     ['pocket','jetted'],['pocket','flap'],['pocket','patch'],
+     ['sleeve','1'],['sleeve','2'],['sleeve','3'],['sleeve','4']
+    ].forEach(([type,val])=>{
+      const el=document.getElementById('detail-img-'+type+'-'+val);
+      if(el&&typeof DETAIL_IMGS!=='undefined'&&DETAIL_IMGS[type+'-'+val]) el.src=DETAIL_IMGS[type+'-'+val];
+    });
+  }catch(e){}
+  try{
+    const sw=document.getElementById('suit-swatches');
+    if(sw&&typeof SUIT_FABRICS!=='undefined') sw.innerHTML=SUIT_FABRICS.map((f,i)=>`
+      <div class="suit-swatch${i===_suit.fabric?' active':''}" style="background:${f.main}" title="${f.name}" onclick="setSuitFabric(${i})">
+        <img src="${f.img||''}" alt="${f.name}" onerror="this.style.display='none'">
+        <span class="suit-swatch-label">${f.name}</span>
+      </div>`).join('');
+  }catch(e){}
+  try{
+    const ls=document.getElementById('suit-lining-swatches');
+    if(ls&&typeof SUIT_LININGS!=='undefined') ls.innerHTML=SUIT_LININGS.map((l,i)=>`
+      <div class="suit-swatch${i===_suit.lining?' active':''}" style="background:${l.color}" title="${l.name}" onclick="setSuitLining(${i})">
+        <span class="suit-swatch-label">${l.name}</span>
+      </div>`).join('');
+  }catch(e){}
+  try{
+    const ts=document.getElementById('suit-tie-swatches');
+    if(ts&&typeof SUIT_TIES!=='undefined') ts.innerHTML=SUIT_TIES.map((t,i)=>`
+      <div class="suit-swatch${i===_suit.tie?' active':''}" style="background:${t.color||'#333'}" title="${t.name}" onclick="setSuitTie(${i})">
+        <span class="suit-swatch-label">${t.name}</span>
+      </div>`).join('');
+  }catch(e){}
+  try{if(typeof updateSuitPreview==='function')updateSuitPreview();}catch(e){}
+  const ov=document.getElementById('suit-overlay');
+  if(ov){ov.style.display='flex';ov.classList.add('open');}
 }
 function closeSuit(){document.getElementById('suit-overlay').classList.remove('open');}
 function setSuitFabric(i){
