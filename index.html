@@ -1402,6 +1402,19 @@ function switchPane(el) {
     finance: 'Finance', ai: 'AI Assistant'
   };
   document.getElementById('topbar-title').textContent = titles[target] || target;
+  // Re-render pane content on every tab switch
+  const renderMap = {
+    appointments: renderAppointments,
+    orders: renderOrders,
+    clients: renderClients,
+    fabrics: renderFabrics,
+    leads: renderLeads,
+    invoices: renderInvoices,
+    followups: renderFollowups,
+    purchases: renderPurchases,
+    finance: renderFinance,
+  };
+  if(renderMap[target]) renderMap[target]();
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1474,8 +1487,9 @@ function renderOrders() {
     {key:'consultation',label:'Consultation',color:'#b8963a'},
     {key:'measuring',   label:'Measuring',   color:'#8b5cf6'},
     {key:'cutting',     label:'Cutting',     color:'#3b82f6'},
+    {key:'stitching',   label:'Stitching',   color:'#ec4899'},
     {key:'fitting',     label:'Fitting',     color:'#f59e0b'},
-    {key:'ready',       label:'Ready',       color:'#22c55e'},
+    {key:'ready',       label:'Ready ✓',     color:'#22c55e'},
     {key:'delivered',   label:'Delivered',   color:'#475569'},
   ];
   const board = document.getElementById('orders-kanban');
