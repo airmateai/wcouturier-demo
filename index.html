@@ -300,6 +300,29 @@ tbody td{padding:12px 14px;font-size:13px;color:var(--txt);vertical-align:middle
 .badge-purple{background:rgba(139,92,246,0.12);color:#a78bfa;}
 .badge-grey{background:rgba(255,255,255,0.06);color:var(--txt2);}
 
+/* ── SUIT DESIGNER ─────────────────────────────────── */
+.ds-section-label{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:500;}
+.ds-option{
+  border:1.5px solid var(--border);border-radius:10px;padding:12px 8px;
+  text-align:center;cursor:pointer;transition:all .15s;
+  font-size:11px;color:var(--txt2);letter-spacing:1px;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.ds-option:hover{border-color:var(--gold);color:var(--txt);}
+.ds-option.active{border-color:var(--gold);background:rgba(184,150,58,0.12);color:var(--gold);}
+.ds-fabric-swatch{
+  border:2px solid var(--border);border-radius:8px;padding:8px 4px;
+  text-align:center;cursor:pointer;transition:all .15s;font-size:10px;
+  color:var(--txt3);letter-spacing:0.5px;
+}
+.ds-fabric-swatch:hover{border-color:var(--gold);}
+.ds-fabric-swatch.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold);}
+.ds-lining-dot{
+  width:36px;height:36px;border-radius:50%;border:2.5px solid transparent;
+  cursor:pointer;transition:all .15s;
+}
+.ds-lining-dot:hover,.ds-lining-dot.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,150,58,0.4);}
+
 /* ── KANBAN ────────────────────────────────────────── */
 .kanban-scroll{overflow-x:auto;padding-bottom:8px;}
 .kanban-board{display:flex;gap:14px;min-width:max-content;}
@@ -1026,6 +1049,147 @@ tbody td{padding:12px 14px;font-size:13px;color:var(--txt);vertical-align:middle
         </div>
       </div><!-- /pane-finance -->
 
+      
+      <!-- ══════════════════ SUIT DESIGNER PANE ══════════════════ -->
+      <div class="pane" id="pane-designer">
+        <div class="page-header">
+          <h1>Bespoke Suit Designer</h1>
+          <p>Configure a made-to-measure suit for your client — live preview updates as you choose</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:420px 1fr;gap:24px;height:calc(100vh - 180px);min-height:600px">
+
+          <!-- LEFT: Suit SVG preview -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:16px">
+            <div style="font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:4px">Live Preview</div>
+
+            <!-- SVG Suit -->
+            <div id="suit-preview-wrap" style="position:relative;width:260px;height:360px">
+              <svg id="suit-svg" viewBox="0 0 260 360" width="260" height="360" xmlns="http://www.w3.org/2000/svg">
+                <!-- Body / jacket -->
+                <path id="suit-body" d="M80,80 L50,110 L30,200 L30,340 L230,340 L230,200 L210,110 L180,80 Z" fill="#1a2340" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <!-- Left lapel -->
+                <path id="suit-lapel-l" d="M80,80 L105,140 L130,120 L105,75 Z" fill="#16203a" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                <!-- Right lapel -->
+                <path id="suit-lapel-r" d="M180,80 L155,140 L130,120 L155,75 Z" fill="#16203a" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                <!-- Shirt visible -->
+                <path d="M105,75 L130,120 L155,75 L145,60 L130,70 L115,60 Z" fill="#f5f0eb" opacity="0.9"/>
+                <!-- Tie -->
+                <path id="suit-tie" d="M126,80 L134,80 L138,160 L130,175 L122,160 Z" fill="#8b1a1a"/>
+                <!-- Left shoulder -->
+                <path d="M80,80 L50,110 L60,115 L90,88 Z" fill="#1a2340" opacity="0.6"/>
+                <!-- Right shoulder -->
+                <path d="M180,80 L210,110 L200,115 L170,88 Z" fill="#1a2340" opacity="0.6"/>
+                <!-- Breast pocket -->
+                <rect id="suit-pocket" x="85" y="130" width="28" height="18" rx="2" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <line x1="85" y1="128" x2="113" y2="128" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+                <!-- Pocket square hint -->
+                <path id="suit-ps" d="M88,130 L92,126 L96,130" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+                <!-- Buttons -->
+                <g id="suit-buttons">
+                  <circle cx="130" cy="185" r="4" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                  <circle cx="130" cy="205" r="4" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+                </g>
+                <!-- Lapel button hole hint -->
+                <line x1="88" y1="145" x2="98" y2="148" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+                <!-- Trouser legs -->
+                <path d="M80,290 L70,340 L120,340 L130,300 Z" fill="#152030" opacity="0.9"/>
+                <path d="M180,290 L190,340 L140,340 L130,300 Z" fill="#152030" opacity="0.9"/>
+                <!-- Trouser crease -->
+                <line x1="95" y1="300" x2="90" y2="340" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <line x1="165" y1="300" x2="170" y2="340" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <!-- Lining flash (collar area) -->
+                <path id="suit-lining" d="M80,80 L70,100 L85,105 L95,90 Z" fill="#8b1a1a" opacity="0.5"/>
+                <path id="suit-lining-r" d="M180,80 L190,100 L175,105 L165,90 Z" fill="#8b1a1a" opacity="0.5"/>
+              </svg>
+            </div>
+
+            <!-- Summary card -->
+            <div style="width:100%;background:var(--surface2);border-radius:10px;padding:16px;border:1px solid var(--border)">
+              <div id="ds-summary" style="font-size:13px;color:var(--txt2);line-height:1.8">
+                <div><span style="color:var(--txt3)">Fabric:</span> <span id="ds-s-fabric" style="color:var(--txt)">Super 150s Merino Navy</span></div>
+                <div><span style="color:var(--txt3)">Lapel:</span> <span id="ds-s-lapel" style="color:var(--txt)">Notch</span></div>
+                <div><span style="color:var(--txt3)">Buttons:</span> <span id="ds-s-buttons" style="color:var(--txt)">2-button</span></div>
+                <div><span style="color:var(--txt3)">Fit:</span> <span id="ds-s-fit" style="color:var(--txt)">Slim</span></div>
+                <div><span style="color:var(--txt3)">Lining:</span> <span id="ds-s-lining" style="color:var(--txt)">Burgundy</span></div>
+              </div>
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+                <div style="font-size:11px;color:var(--txt3);letter-spacing:1px">EST. PRICE</div>
+                <div id="ds-price" style="font-size:20px;font-weight:700;color:var(--gold)">AED 12,500</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Controls -->
+          <div style="overflow-y:auto;display:flex;flex-direction:column;gap:18px">
+
+            <!-- Client selector -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
+              <div class="ds-section-label">Client</div>
+              <select id="ds-client" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--txt);font-size:13px" onchange="dsUpdate()">
+                <option value="">— Select client —</option>
+              </select>
+            </div>
+
+            <!-- Fabric -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
+              <div class="ds-section-label">Fabric</div>
+              <div id="ds-fabrics" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"></div>
+            </div>
+
+            <!-- Lapel style -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
+              <div class="ds-section-label">Lapel Style</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                <div class="ds-option active" id="ds-lapel-notch"   onclick="dsLapel('notch')"  >
+                  <svg viewBox="0 0 50 60" width="40" height="48"><path d="M10,10 L22,35 L25,28 L28,35 L40,10 L25,8 Z" fill="currentColor" opacity="0.7"/><line x1="22" y1="35" x2="28" y2="35" stroke="currentColor" stroke-width="1.5"/></svg>
+                  <div>Notch</div>
+                </div>
+                <div class="ds-option" id="ds-lapel-peak"    onclick="dsLapel('peak')"   >
+                  <svg viewBox="0 0 50 60" width="40" height="48"><path d="M10,10 L18,40 L25,28 L32,40 L40,10 L25,5 Z" fill="currentColor" opacity="0.7"/><path d="M18,40 L10,48 M32,40 L40,48" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+                  <div>Peak</div>
+                </div>
+                <div class="ds-option" id="ds-lapel-shawl"   onclick="dsLapel('shawl')"  >
+                  <svg viewBox="0 0 50 60" width="40" height="48"><path d="M12,10 Q25,50 38,10 Q25,6 12,10 Z" fill="currentColor" opacity="0.7"/></svg>
+                  <div>Shawl</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
+              <div class="ds-section-label">Button Count</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                <div class="ds-option" id="ds-btn-1" onclick="dsButtons(1)"><div style="font-size:28px;font-weight:200;color:var(--gold)">1</div><div>Single</div></div>
+                <div class="ds-option active" id="ds-btn-2" onclick="dsButtons(2)"><div style="font-size:28px;font-weight:200;color:var(--gold)">2</div><div>Double</div></div>
+                <div class="ds-option" id="ds-btn-3" onclick="dsButtons(3)"><div style="font-size:28px;font-weight:200;color:var(--gold)">3</div><div>Three</div></div>
+              </div>
+            </div>
+
+            <!-- Fit -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
+              <div class="ds-section-label">Fit</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                <div class="ds-option active" id="ds-fit-slim"    onclick="dsFit('slim')"    ><div style="font-size:18px">👔</div><div>Slim</div></div>
+                <div class="ds-option"        id="ds-fit-regular" onclick="dsFit('regular')" ><div style="font-size:18px">🧥</div><div>Regular</div></div>
+                <div class="ds-option"        id="ds-fit-full"    onclick="dsFit('full')"    ><div style="font-size:18px">🎩</div><div>Full</div></div>
+              </div>
+            </div>
+
+            <!-- Lining -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
+              <div class="ds-section-label">Lining Colour</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap" id="ds-linings"></div>
+            </div>
+
+            <!-- Create order CTA -->
+            <button onclick="dsCreateOrder()" style="background:var(--gold);color:#000;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase">
+              ＋ Create Order from Design
+            </button>
+          </div>
+        </div>
+      </div><!-- /pane-designer -->
+
       <!-- ══════════════════ AI ASSISTANT PANE ══════════════════ -->
       <div class="pane" id="pane-ai">
         <div class="page-header">
@@ -1399,7 +1563,7 @@ function switchPane(el) {
     dashboard: 'Dashboard', appointments: 'Appointments', orders: 'Orders',
     clients: 'Client Book', fabrics: 'Fabric Inventory', leads: 'Leads Pipeline',
     invoices: 'Invoices', followups: 'Follow-ups', purchases: 'Purchases',
-    finance: 'Finance', ai: 'AI Assistant'
+    finance: 'Finance', ai: 'AI Assistant', designer: 'Suit Designer'
   };
   document.getElementById('topbar-title').textContent = titles[target] || target;
   // Re-render pane content on every tab switch
@@ -1415,6 +1579,7 @@ function switchPane(el) {
     finance: renderFinance,
   };
   if(renderMap[target]) renderMap[target]();
+  if(target==='designer') initDesigner();
 }
 
 /* ═══════════════════════════════════════════════════════════
