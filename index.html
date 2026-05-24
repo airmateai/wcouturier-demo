@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gulf Elite Motors — CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --bg4: #222222;
+    --border: #2a2a2a;
+    --border2: #333333;
+    --gold: #c9a84c;
+    --gold2: #e8c96a;
+    --gold3: #a07830;
+    --text: #f0f0f0;
+    --text2: #aaaaaa;
+    --text3: #666666;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --sidebar-w: 240px;
+    --topbar-h: 64px;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; overflow: hidden; }
+
+  /* ── LAYOUT ── */
+  #app { display: flex; height: 100vh; }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: var(--sidebar-w); min-width: var(--sidebar-w);
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    z-index: 100;
+  }
+  .sidebar-brand {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-logo {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold3), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px; color: #000; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .brand-text { overflow: hidden; }
+  .brand-name { font-size: 13px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+  .brand-sub { font-size: 10px; color: var(--text3); white-space: nowrap; margin-top: 1px; }
+
+  .sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+  .nav-section-label {
+    font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase;
+    letter-spacing: 1px; padding: 8px 10px 4px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.15s; color: var(--text2);
+    font-size: 13px; font-weight: 500; margin-bottom: 2px;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: rgba(201,168,76,0.12); color: var(--gold); }
+  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-badge {
+    margin-left: auto; background: var(--gold); color: #000;
+    font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px;
+    min-width: 18px; text-align: center;
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .user-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .user-info { overflow: hidden; }
+  .user-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .user-role { font-size: 10px; color: var(--text3); }
+
+  /* MAIN */
+  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* TOPBAR */
+  #topbar {
+    height: var(--topbar-h); min-height: var(--topbar-h);
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 24px; gap: 16px;
+    z-index: 50;
+  }
+  .topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .topbar-breadcrumb { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .topbar-left { flex: 1; }
+  .topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+  .search-box {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 8px; display: flex; align-items: center;
+    padding: 0 12px; gap: 8px; height: 36px; width: 220px;
+  }
+  .search-box input {
+    background: none; border: none; outline: none; color: var(--text);
+    font-size: 13px; width: 100%;
+  }
+  .search-box input::placeholder { color: var(--text3); }
+  .search-icon { color: var(--text3); font-size: 14px; }
+
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 8px; background: var(--bg3);
+    border: 1px solid var(--border2); cursor: pointer; display: flex;
+    align-items: center; justify-content: center; color: var(--text2);
+    font-size: 16px; transition: all 0.15s; position: relative;
+  }
+  .icon-btn:hover { background: var(--bg4); color: var(--text); }
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px; width: 7px; height: 7px;
+    background: var(--gold); border-radius: 50%; border: 2px solid var(--bg2);
+  }
+
+  /* CONTENT */
+  #content {
+    flex: 1; overflow-y: auto; padding: 24px;
+    scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+  }
+  #content::-webkit-scrollbar { width: 6px; }
+  #content::-webkit-scrollbar-track { background: transparent; }
+  #content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* VIEWS */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── CARDS & COMMON ── */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .card-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .btn {
+    padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px;
+    font-weight: 600; cursor: pointer; border: none; transition: all 0.15s;
+    font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-gold { background: var(--gold); color: #000; }
+  .btn-gold:hover { background: var(--gold2); }
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-ghost { background: transparent; color: var(--text2); padding: 6px 10px; }
+  .btn-ghost:hover { color: var(--text); background: var(--bg3); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-danger { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 8px;
+    border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-gold { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .badge-purple { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .badge-orange { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .badge-gray { background: rgba(255,255,255,0.06); color: var(--text3); }
+
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* ── DASHBOARD ── */
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold3), var(--gold));
+  }
+  .stat-label { font-size: 12px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-size: 28px; font-weight: 800; color: var(--text); margin: 6px 0 4px; line-height: 1; }
+  .stat-value.gold { color: var(--gold); }
+  .stat-change { font-size: 12px; color: var(--green); font-weight: 500; }
+  .stat-change.down { color: var(--red); }
+  .stat-icon { position: absolute; top: 20px; right: 20px; font-size: 28px; opacity: 0.2; }
+
+  /* Bar chart */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .bar {
+    width: 100%; border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, var(--gold), var(--gold3));
+    transition: height 0.5s ease;
+    min-height: 4px;
+    position: relative; cursor: pointer;
+  }
+  .bar:hover { background: linear-gradient(180deg, var(--gold2), var(--gold)); }
+  .bar-label { font-size: 10px; color: var(--text3); white-space: nowrap; }
+  .bar-val { font-size: 10px; color: var(--text2); font-weight: 600; }
+
+  /* Activity feed */
+  .activity-item {
+    display: flex; gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot {
+    width: 8px; height: 8px; border-radius: 50%; margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .activity-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .activity-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* TOAST */
+  #toast-container {
+    position: fixed; top: 80px; right: 24px; z-index: 9999;
+    display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+  }
+  .toast {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-left: 3px solid var(--gold);
+    border-radius: var(--radius-sm); padding: 12px 16px;
+    max-width: 320px; box-shadow: var(--shadow);
+    animation: slideIn 0.3s ease;
+    pointer-events: all;
+  }
+  .toast.removing { animation: slideOut 0.3s ease forwards; }
+  .toast-title { font-size: 12px; font-weight: 700; color: var(--gold); margin-bottom: 2px; }
+  .toast-msg { font-size: 12px; color: var(--text2); line-height: 1.4; }
+  @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+
+  /* ── INVENTORY ── */
+  .car-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .car-card:hover { transform: translateY(-2px); border-color: var(--border2); }
+  .car-img { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--bg3); }
+  .car-body { padding: 14px; }
+  .car-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .car-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .car-year { font-size: 12px; color: var(--text3); }
+  .car-price { font-size: 18px; font-weight: 800; color: var(--gold); margin: 6px 0; }
+  .car-specs { display: flex; gap: 12px; margin: 8px 0; flex-wrap: wrap; }
+  .car-spec { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+  .car-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .car-actions .btn { flex: 1; justify-content: center; }
+
+  /* ── KANBAN ── */
+  .kanban-board { display: flex; gap: 12px; overflow-x: auto; min-height: calc(100vh - 160px); padding-bottom: 20px; }
+  .kanban-board::-webkit-scrollbar { height: 6px; }
+  .kanban-board::-webkit-scrollbar-track { background: transparent; }
+  .kanban-board::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  .kanban-col {
+    min-width: 220px; width: 220px; flex-shrink: 0;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); display: flex; flex-direction: column;
+  }
+  .kanban-col.drag-over { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+
+  .kanban-col-header {
+    padding: 12px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .kanban-col-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kanban-count {
+    background: var(--bg4); color: var(--text3);
+    font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
+  }
+  .kanban-col-body {
+    flex: 1; padding: 10px; overflow-y: auto; min-height: 80px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .lead-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px;
+    cursor: grab; transition: border-color 0.15s, box-shadow 0.15s;
+    user-select: none;
+  }
+  .lead-card:hover { border-color: var(--border2); box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+  .lead-card.dragging { opacity: 0.4; cursor: grabbing; }
+  .lead-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .lead-car { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+  .lead-meta { display: flex; align-items: center; justify-content: space-between; }
+  .lead-value { font-size: 12px; font-weight: 700; color: var(--gold); }
+  .lead-days { font-size: 10px; color: var(--text3); }
+  .lead-source { margin-bottom: 6px; }
+
+  /* ── TEST DRIVES ── */
+  .week-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(5, 1fr);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; background: var(--bg2);
+  }
+  .week-header {
+    background: var(--bg3); padding: 10px 8px;
+    text-align: center; font-size: 12px; font-weight: 600;
+    border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+  }
+  .week-header:last-child { border-right: none; }
+  .time-slot {
+    padding: 4px 8px; border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border); min-height: 48px; position: relative;
+  }
+  .time-label { font-size: 10px; color: var(--text3); font-weight: 500; }
+  .cal-event {
+    background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 4px; padding: 4px 6px; font-size: 10px; color: var(--gold);
+    font-weight: 500; line-height: 1.3; margin: 2px 0;
+  }
+  .cal-event.blue { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); color: var(--blue); }
+  .cal-event.purple { background: rgba(168,85,247,0.15); border-color: rgba(168,85,247,0.3); color: var(--purple); }
+
+  .td-list { margin-top: 20px; }
+  .td-row {
+    display: flex; align-items: center; gap: 16px; padding: 14px 16px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+  .td-row:hover { border-color: var(--border2); }
+  .td-time { font-size: 13px; font-weight: 700; color: var(--gold); width: 80px; }
+  .td-client { flex: 1; }
+  .td-client-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .td-client-car { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .td-branch { font-size: 12px; color: var(--text2); width: 160px; }
+  .td-status { width: 90px; text-align: right; }
+
+  /* ── CLIENTS ── */
+  .client-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .client-card:hover { border-color: var(--border2); }
+  .client-vip {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(201,168,76,0.15); color: var(--gold);
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px;
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+  .client-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 12px;
+    background: var(--bg3); border: 1px solid var(--border2);
+  }
+  .client-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .client-nat { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+  .client-phone { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+  .client-spend { font-size: 20px; font-weight: 800; color: var(--gold); margin-top: 10px; }
+  .client-spend-label { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .client-cars { font-size: 11px; color: var(--text3); margin-top: 8px; }
+
+  /* ── DEALS TABLE ── */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    text-align: left; padding: 10px 14px; font-size: 11px;
+    font-weight: 700; color: var(--text3); text-transform: uppercase;
+    letter-spacing: 0.5px; border-bottom: 1px solid var(--border);
+    background: var(--bg3); white-space: nowrap;
+  }
+  .data-table td {
+    padding: 12px 14px; border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--text); vertical-align: middle;
+  }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .data-table tr:last-child td { border-bottom: none; }
+
+  /* ── AI CHAT ── */
+  .chat-container {
+    max-width: 480px; margin: 0 auto;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .chat-header {
+    background: #128C7E; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .chat-avatar-wrap { position: relative; }
+  .chat-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold3), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; color: #000;
+  }
+  .chat-online {
+    position: absolute; bottom: 1px; right: 1px; width: 10px; height: 10px;
+    background: var(--green); border-radius: 50%; border: 2px solid #128C7E;
+  }
+  .chat-info { flex: 1; }
+  .chat-name { font-size: 14px; font-weight: 700; color: #fff; }
+  .chat-status { font-size: 11px; color: rgba(255,255,255,0.7); }
+
+  .chat-messages {
+    height: 380px; overflow-y: auto; padding: 16px;
+    background: #0d1117; display: flex; flex-direction: column; gap: 10px;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  .msg-wrap { display: flex; flex-direction: column; }
+  .msg-wrap.bot { align-items: flex-start; }
+  .msg-wrap.user { align-items: flex-end; }
+
+  .msg-bubble {
+    max-width: 80%; padding: 10px 14px; border-radius: 12px;
+    font-size: 13px; line-height: 1.5; position: relative;
+  }
+  .msg-wrap.user .msg-bubble {
+    background: #005c4b; color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .msg-wrap.bot .msg-bubble {
+    background: #1f2c33; color: #e9edef;
+    border-bottom-left-radius: 4px;
+  }
+  .msg-time {
+    font-size: 10px; color: rgba(255,255,255,0.4);
+    margin-top: 4px; padding: 0 4px;
+  }
+
+  .typing-indicator {
+    display: flex; gap: 4px; align-items: center; padding: 10px 14px;
+    background: #1f2c33; border-radius: 12px; border-bottom-left-radius: 4px;
+    width: fit-content;
+  }
+  .typing-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--text3);
+    animation: typingBounce 1.4s infinite ease-in-out;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-5px); opacity: 1; }
+  }
+
+  .crm-badge {
+    background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green); border-radius: var(--radius-sm); padding: 10px 14px;
+    font-size: 13px; font-weight: 600; text-align: center; margin-top: 12px;
+    display: none;
+  }
+  .crm-badge.show { display: block; }
+
+  .chat-input-bar {
+    background: #1f2c33; padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .chat-input-bar input {
+    flex: 1; background: #2a3942; border: none; outline: none;
+    color: #e9edef; font-size: 13px; padding: 8px 12px;
+    border-radius: 20px; font-family: 'Inter', sans-serif;
+  }
+  .send-btn {
+    width: 36px; height: 36px; border-radius: 50%; background: #128C7E;
+    border: none; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; color: #fff; font-size: 16px;
+  }
+
+  /* ── FINANCE ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .kpi-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px;
+  }
+  .kpi-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .kpi-value { font-size: 22px; font-weight: 800; color: var(--text); margin-top: 6px; }
+  .kpi-value.gold { color: var(--gold); }
+  .kpi-change { font-size: 12px; color: var(--green); margin-top: 4px; }
+
+  /* CSS bar chart for finance */
+  .fin-chart { display: flex; align-items: flex-end; gap: 10px; height: 140px; padding-top: 10px; }
+  .fin-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .fin-bar {
+    width: 100%; border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, var(--gold), var(--gold3));
+    transition: all 0.5s;
+  }
+  .fin-bar:hover { background: linear-gradient(180deg, var(--gold2), var(--gold)); }
+  .fin-bar-label { font-size: 10px; color: var(--text3); }
+  .fin-bar-val { font-size: 10px; color: var(--gold); font-weight: 600; }
+
+  /* Pie chart CSS */
+  .pie-chart-wrap { display: flex; align-items: center; gap: 24px; }
+  .pie-chart { width: 120px; height: 120px; border-radius: 50%; flex-shrink: 0; }
+  .pie-legend { display: flex; flex-direction: column; gap: 8px; }
+  .pie-item { display: flex; align-items: center; gap: 8px; }
+  .pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .pie-item-label { font-size: 12px; color: var(--text2); }
+  .pie-item-pct { font-size: 12px; font-weight: 700; color: var(--text); margin-left: auto; }
+
+  /* divider */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* section title */
+  .section-title {
+    font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px;
+  }
+  .section-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+
+  /* modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 1000; display: flex; align-items: center; justify-content: center;
+    display: none;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 28px; min-width: 400px;
+    max-width: 500px; box-shadow: var(--shadow);
+  }
+  .modal-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--text3); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 9px 12px; color: var(--text);
+    font-size: 13px; outline: none; font-family: 'Inter', sans-serif;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--gold); }
+  .form-select {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 9px 12px; color: var(--text);
+    font-size: 13px; outline: none; font-family: 'Inter', sans-serif;
+    cursor: pointer; appearance: none;
+  }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+  /* scrollbar for kanban col */
+  .kanban-col-body::-webkit-scrollbar { width: 4px; }
+  .kanban-col-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* pulse animation for live dot */
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+    display: inline-block; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+  }
+
+  /* progress bar */
+  .progress { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold3), var(--gold)); }
+
+  /* tag */
+  .tag {
+    display: inline-flex; align-items: center; padding: 2px 7px;
+    background: var(--bg4); color: var(--text3); border-radius: 4px;
+    font-size: 10px; font-weight: 500; border: 1px solid var(--border);
+  }
+
+  @media (max-width: 1100px) {
+    :root { --sidebar-w: 200px; }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">GEM</div>
+      <div class="brand-text">
+        <div class="brand-name">Gulf Elite Motors</div>
+        <div class="brand-sub">Dubai's Premier Luxury Auto Group</div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <div class="nav-item active" data-view="dashboard"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" data-view="inventory"><span class="nav-icon">🚗</span> Inventory <span class="nav-badge">47</span></div>
+      <div class="nav-item" data-view="leads"><span class="nav-icon">👥</span> Leads Pipeline <span class="nav-badge">12</span></div>
+      <div class="nav-item" data-view="testdrives"><span class="nav-icon">📅</span> Test Drives</div>
+      <div class="nav-section-label">Sales</div>
+      <div class="nav-item" data-view="clients"><span class="nav-icon">👤</span> Clients</div>
+      <div class="nav-item" data-view="deals"><span class="nav-icon">💰</span> Deals</div>
+      <div class="nav-section-label">Tools</div>
+      <div class="nav-item" data-view="ai"><span class="nav-icon">💬</span> AI Assistant</div>
+      <div class="nav-item" data-view="finance"><span class="nav-icon">📈</span> Finance</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-avatar">SA</div>
+      <div class="user-info">
+        <div class="user-name">Sultan Al Rashidi</div>
+        <div class="user-role">Sales Director</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div id="main">
+    <!-- TOPBAR -->
+    <div id="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-breadcrumb">Gulf Elite Motors · Sheikh Zayed Road · Dubai Marina · DIFC</div>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search leads, cars, clients…">
+        </div>
+        <div class="icon-btn" title="Notifications">🔔<span class="notif-dot"></span></div>
+        <div class="icon-btn" title="Settings">⚙️</div>
+        <div class="live-dot" title="System live"></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div id="content">
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard"></div>
+      <!-- INVENTORY -->
+      <div class="view" id="view-inventory"></div>
+      <!-- LEADS -->
+      <div class="view" id="view-leads"></div>
+      <!-- TEST DRIVES -->
+      <div class="view" id="view-testdrives"></div>
+      <!-- CLIENTS -->
+      <div class="view" id="view-clients"></div>
+      <!-- DEALS -->
+      <div class="view" id="view-deals"></div>
+      <!-- AI -->
+      <div class="view" id="view-ai"></div>
+      <!-- FINANCE -->
+      <div class="view" id="view-finance"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- NEW TEST DRIVE MODAL -->
+<div class="modal-overlay" id="td-modal">
+  <div class="modal">
+    <div class="modal-title">📅 New Test Drive</div>
+    <div class="form-group">
+      <label class="form-label">Client Name</label>
+      <input class="form-input" type="text" placeholder="e.g. Mohammed Al Farsi">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Vehicle</label>
+      <select class="form-select">
+        <option>Rolls-Royce Ghost 2024</option>
+        <option>Bentley Bentayga 2024</option>
+        <option>Mercedes G63 AMG 2024</option>
+        <option>Lamborghini Urus 2024</option>
+        <option>Ferrari Roma 2024</option>
+        <option>Porsche 911 Turbo S 2024</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Date & Time</label>
+      <input class="form-input" type="datetime-local">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Branch</label>
+      <select class="form-select">
+        <option>Sheikh Zayed Road</option>
+        <option>Dubai Marina</option>
+        <option>DIFC</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeTDModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveTDModal()">✅ Book Test Drive</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────────────────────────
+const INVENTORY = [
+  { id:1, make:'Rolls-Royce', model:'Ghost', year:2024, price:1200000, status:'Available', color:'Midnight Blue', mileage:0, fuel:'Petrol', power:'563 hp', img:'https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=80' },
+  { id:2, make:'Bentley', model:'Bentayga', year:2024, price:890000, status:'Reserved', color:'Onyx Black', mileage:0, fuel:'Petrol', power:'542 hp', img:'https://images.unsplash.com/photo-1555626906-fcf10d6851b4?w=400&q=80' },
+  { id:3, make:'Mercedes', model:'G63 AMG', year:2024, price:680000, status:'Available', color:'Selenite Grey', mileage:1200, fuel:'Petrol', power:'577 hp', img:'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80' },
+  { id:4, make:'Lamborghini', model:'Urus', year:2024, price:950000, status:'Available', color:'Arancio Borealis', mileage:0, fuel:'Petrol', power:'657 hp', img:'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=80' },
+  { id:5, make:'Ferrari', model:'Roma', year:2024, price:1100000, status:'Sold', color:'Rosso Corsa', mileage:350, fuel:'Petrol', power:'612 hp', img:'https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=400&q=80' },
+  { id:6, make:'Range Rover', model:'Autobiography', year:2024, price:620000, status:'Available', color:'Santorini Black', mileage:0, fuel:'Petrol', power:'523 hp', img:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400&q=80' },
+  { id:7, make:'Porsche', model:'911 Turbo S', year:2024, price:780000, status:'Available', color:'Shark Blue', mileage:0, fuel:'Petrol', power:'650 hp', img:'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=80' },
+  { id:8, make:'McLaren', model:'720S', year:2024, price:1350000, status:'Reserved', color:'Papaya Spark', mileage:0, fuel:'Petrol', power:'710 hp', img:'https://images.unsplash.com/photo-1558618047-3c8c76ca7c0a?w=400&q=80' },
+  { id:9, make:'BMW', model:'X7 M', year:2024, price:440000, status:'Available', color:'Carbon Black', mileage:800, fuel:'Petrol', power:'530 hp', img:'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=80' },
+  { id:10, make:'Aston Martin', model:'DBX', year:2024, price:870000, status:'Available', color:'Racing Green', mileage:0, fuel:'Petrol', power:'542 hp', img:'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=400&q=80' },
+];
+
+const LEADS = {
+  'Inquiry': [
+    { id:'L001', name:'Khalid Al Mansoori', car:'Rolls-Royce Ghost', source:'WhatsApp', value:1200000, days:1 },
+    { id:'L002', name:'James Hartwell', car:'Porsche 911 Turbo S', source:'Website', value:780000, days:2 },
+    { id:'L003', name:'Wang Wei', car:'Bentley Bentayga', source:'Instagram', value:890000, days:1 },
+  ],
+  'Contacted': [
+    { id:'L004', name:'Ahmed Al Rashid', car:'Lamborghini Urus', source:'Referral', value:950000, days:3 },
+    { id:'L005', name:'Natasha Volkov', car:'Mercedes G63 AMG', source:'Instagram', value:680000, days:4 },
+  ],
+  'Test Drive': [
+    { id:'L006', name:'Sultan Al Qasimi', car:'McLaren 720S', source:'WhatsApp', value:1350000, days:2 },
+    { id:'L007', name:'David Morrison', car:'Range Rover Autobiography', source:'Website', value:620000, days:5 },
+  ],
+  'Offer': [
+    { id:'L008', name:'Hamdan Al Maktoum', car:'Ferrari Roma', source:'Referral', value:1100000, days:6 },
+    { id:'L009', name:'Priya Sharma', car:'BMW X7 M', source:'Instagram', value:440000, days:3 },
+  ],
+  'Closed Won': [
+    { id:'L010', name:'Saeed Al Falasi', car:'Aston Martin DBX', source:'Referral', value:870000, days:8 },
+  ],
+  'Closed Lost': [
+    { id:'L011', name:'Robert Klein', car:'Porsche 911 Turbo S', source:'Website', value:780000, days:12 },
+  ],
+};
+
+const TEST_DRIVES = [
+  { id:1, client:'Sultan Al Qasimi', car:'McLaren 720S', date:'Mon 26 May', time:'10:00', branch:'Sheikh Zayed Road', status:'Confirmed' },
+  { id:2, client:'Hamdan Al Maktoum', car:'Rolls-Royce Ghost', date:'Mon 26 May', time:'14:00', branch:'DIFC', status:'Confirmed' },
+  { id:3, client:'James Hartwell', car:'Porsche 911 Turbo S', date:'Tue 27 May', time:'11:00', branch:'Sheikh Zayed Road', status:'Pending' },
+  { id:4, client:'Natasha Volkov', car:'Mercedes G63 AMG', date:'Tue 27 May', time:'15:00', branch:'Dubai Marina', status:'Confirmed' },
+  { id:5, client:'Wang Wei', car:'Bentley Bentayga', date:'Wed 28 May', time:'10:30', branch:'DIFC', status:'Pending' },
+  { id:6, client:'David Morrison', car:'Range Rover Autobiography', date:'Wed 28 May', time:'13:00', branch:'Sheikh Zayed Road', status:'Confirmed' },
+  { id:7, client:'Priya Sharma', car:'BMW X7 M', date:'Thu 29 May', time:'09:00', branch:'Dubai Marina', status:'Confirmed' },
+  { id:8, client:'Khalid Al Mansoori', car:'Rolls-Royce Ghost', date:'Thu 29 May', time:'14:00', branch:'Sheikh Zayed Road', status:'Pending' },
+  { id:9, client:'Ahmed Al Rashid', car:'Lamborghini Urus', date:'Fri 30 May', time:'11:00', branch:'DIFC', status:'Confirmed' },
+];
+
+const CLIENTS = [
+  { id:1, name:'Hamdan Al Maktoum', flag:'🇦🇪', nat:'Emirati', phone:'+971 50 123 4567', cars:['Rolls-Royce Ghost', 'Bentley Mulsanne'], spend:3100000, vip:true },
+  { id:2, name:'Saeed Al Falasi', flag:'🇦🇪', nat:'Emirati', phone:'+971 55 987 6543', cars:['Lamborghini Urus', 'Ferrari Roma'], spend:2050000, vip:true },
+  { id:3, name:'Sultan Al Qasimi', flag:'🇦🇪', nat:'Emirati', phone:'+971 56 321 0987', cars:['McLaren 720S'], spend:1350000, vip:false },
+  { id:4, name:'Khalid Al Mansoori', flag:'🇦🇪', nat:'Emirati', phone:'+971 50 555 3344', cars:['Mercedes G63 AMG', 'Range Rover'], spend:1300000, vip:true },
+  { id:5, name:'Faisal Al Saud', flag:'🇸🇦', nat:'Saudi', phone:'+966 54 888 2211', cars:['Rolls-Royce Cullinan'], spend:1450000, vip:true },
+  { id:6, name:'James Hartwell', flag:'🇬🇧', nat:'British', phone:'+971 52 777 4455', cars:['Porsche 911 Turbo S', 'BMW X7'], spend:1220000, vip:false },
+  { id:7, name:'Dmitri Volkov', flag:'🇷🇺', nat:'Russian', phone:'+971 58 444 7788', cars:['Bentley Bentayga', 'Aston Martin DBX'], spend:1760000, vip:true },
+  { id:8, name:'Wang Wei', flag:'🇨🇳', nat:'Chinese', phone:'+971 55 222 9900', cars:['Lamborghini Urus'], spend:950000, vip:false },
+  { id:9, name:'Priya Sharma', flag:'🇮🇳', nat:'Indian', phone:'+971 50 333 6677', cars:['Range Rover Autobiography'], spend:620000, vip:false },
+  { id:10, name:'David Morrison', flag:'🇦🇺', nat:'Australian', phone:'+971 56 111 8899', cars:['BMW X7 M', 'Porsche Cayenne'], spend:860000, vip:false },
+];
+
+const DEALS = [
+  { id:'D-2024-041', client:'Hamdan Al Maktoum', car:'Rolls-Royce Ghost 2024', price:1200000, date:'2024-05-14', salesperson:'Sultan Al Rashidi' },
+  { id:'D-2024-040', client:'Saeed Al Falasi', car:'Aston Martin DBX 2024', price:870000, date:'2024-05-12', salesperson:'Layla Hassan' },
+  { id:'D-2024-039', client:'Faisal Al Saud', car:'Lamborghini Urus 2024', price:950000, date:'2024-05-10', salesperson:'Omar Khalil' },
+  { id:'D-2024-038', client:'Dmitri Volkov', car:'Bentley Bentayga 2024', price:890000, date:'2024-05-08', salesperson:'Sultan Al Rashidi' },
+  { id:'D-2024-037', client:'James Hartwell', car:'Porsche 911 Turbo S 2023', price:750000, date:'2024-05-06', salesperson:'Layla Hassan' },
+  { id:'D-2024-036', client:'Khalid Al Mansoori', car:'Mercedes G63 AMG 2024', price:680000, date:'2024-05-03', salesperson:'Omar Khalil' },
+  { id:'D-2024-035', client:'Wang Wei', car:'Ferrari Roma 2024', price:1100000, date:'2024-04-29', salesperson:'Sultan Al Rashidi' },
+  { id:'D-2024-034', client:'David Morrison', car:'BMW X7 M 2024', price:440000, date:'2024-04-25', salesperson:'Layla Hassan' },
+];
+
+const MONTHLY_SALES = [
+  { month:'Dec', units:7, rev:5.8 },
+  { month:'Jan', units:9, rev:7.2 },
+  { month:'Feb', units:8, rev:6.5 },
+  { month:'Mar', units:11, rev:9.1 },
+  { month:'Apr', units:10, rev:8.7 },
+  { month:'May', units:13, rev:8.2 },
+];
+
+const ACTIVITY_FEED = [
+  { color:'#22c55e', text:'Ahmed Al Mansouri inquired about Rolls-Royce Ghost via WhatsApp', time:'2 min ago' },
+  { color:'#c9a84c', text:'Test drive confirmed — Sultan Al Qasimi · McLaren 720S · Mon 10:00', time:'15 min ago' },
+  { color:'#3b82f6', text:'Deal D-2024-041 closed: Hamdan Al Maktoum · AED 1,200,000', time:'1 hr ago' },
+  { color:'#a855f7', text:'New lead from Instagram — Natasha Volkov interested in G63 AMG', time:'2 hrs ago' },
+  { color:'#f97316', text:'Inventory updated: McLaren 720S marked as Reserved', time:'3 hrs ago' },
+];
+
+const TOAST_POOL = [
+  'New WhatsApp lead: Khalid asking about G-Wagon 🔥',
+  'Instagram DM: "How much is the Rolls-Royce?" — Omar B.',
+  'Test drive reminder: Wang Wei @ 10:30 — DIFC showroom',
+  'New referral lead: Faisal Al Saud — Lamborghini Urus',
+  'Deal alert: Counter-offer received on D-2024-038 📋',
+  'New website inquiry: Porsche 911 Turbo S — expat buyer',
+  'VIP client Hamdan Al Maktoum viewed Ghost brochure online',
+  'Low stock alert: Only 1 Ferrari Roma remaining in inventory',
+];
+
+// ────────────────────────────────────────────────────────────────
+// HELPERS
+// ────────────────────────────────────────────────────────────────
+function fmtAED(n) {
+  if (n >= 1000000) return 'AED ' + (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return 'AED ' + (n / 1000).toFixed(0) + 'K';
+  return 'AED ' + n.toLocaleString();
+}
+
+function fmtAEDFull(n) {
+  return 'AED ' + n.toLocaleString();
+}
+
+function sourceColor(s) {
+  const m = { 'WhatsApp':'green', 'Instagram':'purple', 'Website':'blue', 'Referral':'gold' };
+  return m[s] || 'gray';
+}
+
+function statusBadge(s) {
+  const m = { 'Available':'badge-green', 'Reserved':'badge-gold', 'Sold':'badge-red',
+              'Confirmed':'badge-green', 'Pending':'badge-gold', 'Closed Won':'badge-green', 'Closed Lost':'badge-red' };
+  return m[s] || 'badge-gray';
+}
+
+function showToast(msg, title) {
+  title = title || '📲 New Lead';
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<div class="toast-title">' + title + '</div><div class="toast-msg">' + msg + '</div>';
+  tc.appendChild(t);
+  setTimeout(() => {
+    t.classList.add('removing');
+    setTimeout(() => t.remove(), 300);
+  }, 5000);
+}
+
+// ────────────────────────────────────────────────────────────────
+// NAVIGATION
+// ────────────────────────────────────────────────────────────────
+const VIEW_TITLES = {
+  dashboard: 'Dashboard', inventory: 'Inventory', leads: 'Leads Pipeline',
+  testdrives: 'Test Drives', clients: 'Clients', deals: 'Deals',
+  ai: 'AI Assistant', finance: 'Finance'
+};
+
+let currentView = 'dashboard';
+
+function switchView(v) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelector('[data-view="' + v + '"]').classList.add('active');
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.getElementById('topbar-title').textContent = VIEW_TITLES[v];
+  currentView = v;
+  renderView(v);
+}
+
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => switchView(el.dataset.view));
+});
+
+// ────────────────────────────────────────────────────────────────
+// RENDER ROUTER
+// ────────────────────────────────────────────────────────────────
+function renderView(v) {
+  const fns = {
+    dashboard: renderDashboard, inventory: renderInventory, leads: renderLeads,
+    testdrives: renderTestDrives, clients: renderClients, deals: renderDeals,
+    ai: renderAI, finance: renderFinance
+  };
+  if (fns[v]) fns[v]();
+}
+
+// ────────────────────────────────────────────────────────────────
+// DASHBOARD
+// ────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const maxRev = Math.max(...MONTHLY_SALES.map(m => m.rev));
+  const bars = MONTHLY_SALES.map(m => {
+    const h = Math.round((m.rev / maxRev) * 90);
+    return '<div class="bar-wrap"><div class="bar-val">' + m.rev + 'M</div><div class="bar" style="height:' + h + 'px" title="' + m.month + ': AED ' + m.rev + 'M"></div><div class="bar-label">' + m.month + '</div></div>';
+  }).join('');
+
+  const activity = ACTIVITY_FEED.map(a =>
+    '<div class="activity-item"><div class="activity-dot" style="background:' + a.color + '"></div><div><div class="activity-text">' + a.text + '</div><div class="activity-time">' + a.time + '</div></div></div>'
+  ).join('');
+
+  document.getElementById('view-dashboard').innerHTML = `
+    <div class="section-title">Good evening, Sultan 👋</div>
+    <div class="section-sub">Here's what's happening at Gulf Elite Motors today.</div>
+
+    <div class="grid grid-4" style="margin-bottom:20px">
+      <div class="stat-card">
+        <div class="stat-icon">🚗</div>
+        <div class="stat-label">Units in Stock</div>
+        <div class="stat-value">47</div>
+        <div class="stat-change">↑ 3 added this week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Leads This Month</div>
+        <div class="stat-value">184</div>
+        <div class="stat-change">↑ 22% vs last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-label">Test Drives</div>
+        <div class="stat-value">23</div>
+        <div class="stat-change">↑ 5 this week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Revenue MTD</div>
+        <div class="stat-value gold">AED 8.2M</div>
+        <div class="stat-change">↑ 18% vs May target</div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Monthly Revenue</div><div class="card-sub">Last 6 months · AED millions</div></div>
+        </div>
+        <div class="bar-chart">${bars}</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Sales Pipeline</div><div class="card-sub">Current funnel performance</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+          ${[['Inquiry','184 leads','100%'],['Contacted','87 leads','47%'],['Test Drive','43 leads','23%'],['Offer','21 leads','11%'],['Closed','13 leads','7%']].map(([s,l,p]) => `
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <span style="font-size:12px;color:var(--text2)">${s}</span>
+              <span style="font-size:12px;color:var(--text3)">${l}</span>
+            </div>
+            <div class="progress"><div class="progress-bar" style="width:${p}"></div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Recent Activity</div><div class="card-sub">Live feed</div></div>
+          <span class="live-dot"></span>
+        </div>
+        ${activity}
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Top Performers</div><div class="card-sub">May 2024</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          ${[['Sultan Al Rashidi','AED 3.0M',8,'#c9a84c'],['Layla Hassan','AED 2.2M',6,'#3b82f6'],['Omar Khalil','AED 1.6M',4,'#22c55e'],['Rania Aziz','AED 1.4M',3,'#a855f7']].map(([n,r,d,c],i) => `
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:28px;height:28px;border-radius:50%;background:${c}22;border:1px solid ${c}44;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${c}">${i+1}</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:var(--text)">${n}</div>
+              <div style="font-size:11px;color:var(--text3)">${d} deals closed</div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:${c}">${r}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ────────────────────────────────────────────────────────────────
+// INVENTORY
+// ────────────────────────────────────────────────────────────────
+function renderInventory() {
+  const cards = INVENTORY.map(c => `
+    <div class="car-card">
+      <img class="car-img" src="${c.img}" alt="${c.make} ${c.model}" loading="lazy" onerror="this.style.background='#1a1a1a'">
+      <div class="car-body">
+        <div class="car-meta">
+          <div>
+            <div class="car-name">${c.make} ${c.model}</div>
+            <div class="car-year">${c.year}</div>
+          </div>
+          <span class="badge ${statusBadge(c.status)}">${c.status}</span>
+        </div>
+        <div class="car-price">${fmtAEDFull(c.price)}</div>
+        <div class="car-specs">
+          <span class="car-spec">⚡ ${c.power}</span>
+          <span class="car-spec">🎨 ${c.color}</span>
+          <span class="car-spec">📏 ${c.mileage.toLocaleString()} km</span>
+          <span class="car-spec">⛽ ${c.fuel}</span>
+        </div>
+        <div class="car-actions">
+          <button class="btn btn-outline btn-sm" onclick="showToast('Viewing details for ${c.make} ${c.model}', '🚗 Inventory')">View Details</button>
+          <button class="btn btn-gold btn-sm" onclick="reserveCar(${c.id})">${c.status === 'Available' ? 'Reserve' : 'Info'}</button>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('view-inventory').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="section-title">Vehicle Inventory</div>
+        <div class="section-sub">47 vehicles across all showrooms</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" onclick="showToast('Filter applied','⚙️ Inventory')">🔽 Filter</button>
+        <button class="btn btn-gold" onclick="showToast('Add vehicle form coming soon','🚗 Inventory')">+ Add Vehicle</button>
+      </div>
+    </div>
+    <div class="grid grid-3">${cards}</div>`;
+}
+
+function reserveCar(id) {
+  const c = INVENTORY.find(x => x.id === id);
+  if (!c) return;
+  if (c.status === 'Available') {
+    c.status = 'Reserved';
+    showToast(c.make + ' ' + c.model + ' marked as Reserved', '🚗 Reserved');
+    renderInventory();
+  } else {
+    showToast('Contact us for more information on this vehicle', '📞 Info');
+  }
+}
+
+// ────────────────────────────────────────────────────────────────
+// LEADS KANBAN
+// ────────────────────────────────────────────────────────────────
+let draggedLead = null;
+let draggedFromCol = null;
+
+function renderLeads() {
+  const colColors = {
+    'Inquiry':'#3b82f6','Contacted':'#f97316','Test Drive':'#a855f7',
+    'Offer':'#c9a84c','Closed Won':'#22c55e','Closed Lost':'#ef4444'
+  };
+
+  const cols = Object.entries(LEADS).map(([col, leads]) => {
+    const color = colColors[col] || '#666';
+    const cards = leads.map(l => `
+      <div class="lead-card" draggable="true" data-id="${l.id}" data-col="${col}"
+           ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+        <div class="lead-name">${l.name}</div>
+        <div class="lead-car">🚗 ${l.car}</div>
+        <div class="lead-source">
+          <span class="badge badge-${sourceColor(l.source)}">${l.source}</span>
+        </div>
+        <div class="lead-meta">
+          <span class="lead-value">${fmtAED(l.value)}</span>
+          <span class="lead-days">${l.days}d</span>
+        </div>
+      </div>`).join('');
+
+    return `
+      <div class="kanban-col" data-col="${col}"
+           ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragleave="onDragLeave(event)">
+        <div class="kanban-col-header">
+          <span class="kanban-col-title" style="color:${color}">${col}</span>
+          <span class="kanban-count">${leads.length}</span>
+        </div>
+        <div class="kanban-col-body">${cards}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('view-leads').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="section-title">Leads Pipeline</div>
+        <div class="section-sub">Drag cards between stages to update status</div>
+      </div>
+      <button class="btn btn-gold" onclick="showToast('New lead form coming soon','👥 Leads')">+ New Lead</button>
+    </div>
+    <div class="kanban-board">${cols}</div>`;
+}
+
+function onDragStart(e) {
+  draggedLead = { id: e.currentTarget.dataset.id, col: e.currentTarget.dataset.col };
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const col = e.currentTarget;
+  if (!col.classList.contains('drag-over')) {
+    document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+    col.classList.add('drag-over');
+  }
+}
+
+function onDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  const targetCol = e.currentTarget.dataset.col;
+  if (!draggedLead || draggedLead.col === targetCol) {
+    document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+    return;
+  }
+  const sourceLeads = LEADS[draggedLead.col];
+  const idx = sourceLeads.findIndex(l => l.id === draggedLead.id);
+  if (idx !== -1) {
+    const [lead] = sourceLeads.splice(idx, 1);
+    lead.days = 0;
+    LEADS[targetCol].push(lead);
+    showToast(lead.name + ' moved to ' + targetCol, '👥 Pipeline');
+    renderLeads();
+  }
+  draggedLead = null;
+}
+
+// ────────────────────────────────────────────────────────────────
+// TEST DRIVES
+// ────────────────────────────────────────────────────────────────
+function renderTestDrives() {
+  // Week calendar (Mon-Fri, 08-12 shown)
+  const days = ['Mon 26', 'Tue 27', 'Wed 28', 'Thu 29', 'Fri 30'];
+  const hours = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00'];
+  const colorClass = ['', 'blue', 'purple', '', 'blue', 'purple', '', 'blue'];
+
+  let headers = '<div class="week-header"></div>' + days.map(d => `<div class="week-header">${d} May</div>`).join('');
+
+  let rows = hours.map((h, hi) => {
+    let cells = `<div class="time-slot"><div class="time-label">${h}</div></div>`;
+    days.forEach((d, di) => {
+      const events = TEST_DRIVES.filter(td => {
+        const dayMatch = td.date.startsWith(d.split(' ')[0]);
+        const timeMatch = td.time === h;
+        return dayMatch && timeMatch;
+      });
+      const evHtml = events.map(ev =>
+        `<div class="cal-event ${colorClass[hi]}">${ev.client.split(' ')[0]}<br>${ev.car.split(' ').slice(-1)[0]}</div>`
+      ).join('');
+      cells += `<div class="time-slot">${evHtml}</div>`;
+    });
+    return rows = `<div style="display:contents">${cells}</div>`;
+  }).join('');
+
+  const list = TEST_DRIVES.map(td => `
+    <div class="td-row">
+      <div class="td-time">${td.time}</div>
+      <div class="td-client">
+        <div class="td-client-name">${td.client}</div>
+        <div class="td-client-car">🚗 ${td.car}</div>
+      </div>
+      <div class="td-branch">📍 ${td.branch}</div>
+      <div style="font-size:12px;color:var(--text3)">${td.date}</div>
+      <div class="td-status"><span class="badge ${statusBadge(td.status)}">${td.status}</span></div>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('${td.client} — ${td.car} details','📅 Test Drive')">⋯</button>
+    </div>`).join('');
+
+  document.getElementById('view-testdrives').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="section-title">Test Drives</div>
+        <div class="section-sub">Week of 26–30 May 2024</div>
+      </div>
+      <button class="btn btn-gold" onclick="openTDModal()">+ New Test Drive</button>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;overflow-x:auto">
+      <div class="card-header">
+        <div class="card-title">Weekly Calendar</div>
+      </div>
+      <div class="week-grid">
+        ${headers}
+        ${TEST_DRIVES.map(td => {
+          const di = days.findIndex(d => td.date.startsWith(d.split(' ')[0]));
+          const hi = hours.findIndex(h => h === td.time);
+          if (di < 0 || hi < 0) return '';
+          const cc = ['','blue','purple','','blue','purple','','blue'][hi];
+          return `<style>.week-cell-${td.id}{grid-column:${di+2};grid-row:${hi+2}}</style>`;
+        }).join('')}
+        ${hours.map((h,hi) => {
+          const timeCell = `<div class="time-slot" style="background:var(--bg3);border-right:1px solid var(--border)"><div class="time-label" style="line-height:40px">${h}</div></div>`;
+          const dayCells = days.map((d,di) => {
+            const evs = TEST_DRIVES.filter(td => td.date.startsWith(d.split(' ')[0]) && td.time === h);
+            const cc = ['','blue','purple','','blue','purple','','blue'][hi];
+            const evHtml = evs.map(ev => `<div class="cal-event ${cc}">${ev.client.split(' ')[0]}<br>${ev.car.replace(/\d{4}/,'').trim()}</div>`).join('');
+            return `<div class="time-slot" style="${di===4?'':'border-right:1px solid var(--border)'}">${evHtml}</div>`;
+          }).join('');
+          return timeCell + dayCells;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="card-title" style="margin-bottom:12px">All Appointments</div>
+    <div class="td-list">${list}</div>`;
+}
+
+function openTDModal() { document.getElementById('td-modal').classList.add('show'); }
+function closeTDModal() { document.getElementById('td-modal').classList.remove('show'); }
+function saveTDModal() {
+  closeTDModal();
+  showToast('Test drive booked and added to calendar ✅', '📅 Test Drive');
+}
+
+// ────────────────────────────────────────────────────────────────
+// CLIENTS
+// ────────────────────────────────────────────────────────────────
+function renderClients() {
+  const cards = CLIENTS.map(c => `
+    <div class="client-card">
+      ${c.vip ? '<div class="client-vip">⭐ VIP</div>' : ''}
+      <div class="client-avatar">${c.flag}</div>
+      <div class="client-name">${c.name}</div>
+      <div class="client-nat">${c.nat} · ${c.phone}</div>
+      <div class="client-cars">🚗 ${c.cars.join(' · ')}</div>
+      <div class="client-spend">${fmtAED(c.spend)}</div>
+      <div class="client-spend-label">Total Spend</div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="btn btn-outline btn-sm" style="flex:1;justify-content:center" onclick="showToast('Calling ${c.name}…','📞 Client')">📞 Call</button>
+        <button class="btn btn-gold btn-sm" style="flex:1;justify-content:center" onclick="showToast('Opening ${c.name} profile','👤 Client')">Profile</button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('view-clients').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="section-title">Client Directory</div>
+        <div class="section-sub">10 active clients · AED 13.4M total value</div>
+      </div>
+      <button class="btn btn-gold" onclick="showToast('Add client form coming soon','👤 Clients')">+ Add Client</button>
+    </div>
+    <div class="grid grid-3">${cards}</div>`;
+}
+
+// ────────────────────────────────────────────────────────────────
+// DEALS
+// ────────────────────────────────────────────────────────────────
+function renderDeals() {
+  const rows = DEALS.map(d => `
+    <tr>
+      <td><span class="tag">${d.id}</span></td>
+      <td style="font-weight:600">${d.client}</td>
+      <td style="color:var(--text2)">${d.car}</td>
+      <td style="font-weight:700;color:var(--gold)">${fmtAEDFull(d.price)}</td>
+      <td style="color:var(--green);font-weight:600">${fmtAEDFull(Math.round(d.price * 0.03))}</td>
+      <td style="color:var(--text3)">${d.date}</td>
+      <td style="color:var(--text2)">${d.salesperson}</td>
+      <td><span class="badge badge-green">Closed</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="printContract('${d.id}')">🖨 Print</button></td>
+    </tr>`).join('');
+
+  const total = DEALS.reduce((a, d) => a + d.price, 0);
+  const commission = DEALS.reduce((a, d) => a + Math.round(d.price * 0.03), 0);
+
+  document.getElementById('view-deals').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div class="section-title">Closed Deals</div>
+        <div class="section-sub">${DEALS.length} deals · Total ${fmtAEDFull(total)}</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span style="font-size:13px;color:var(--text3)">Commission: <strong style="color:var(--gold)">${fmtAEDFull(commission)}</strong></span>
+        <button class="btn btn-gold" onclick="showToast('Export ready for download','💰 Deals')">↓ Export</button>
+      </div>
+    </div>
+    <div class="card" style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Deal ID</th><th>Client</th><th>Vehicle</th><th>Price</th>
+            <th>Commission (3%)</th><th>Date</th><th>Salesperson</th><th>Status</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function printContract(id) {
+  showToast('Contract ' + id + ' sent to printer ✅', '🖨 Print');
+}
+
+// ────────────────────────────────────────────────────────────────
+// AI ASSISTANT
+// ────────────────────────────────────────────────────────────────
+let aiPlayed = false;
+
+function renderAI() {
+  document.getElementById('view-ai').innerHTML = `
+    <div class="section-title" style="margin-bottom:4px">AI Sales Assistant</div>
+    <div class="section-sub">WhatsApp AI handles leads 24/7 and syncs to CRM automatically</div>
+
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:300px">
+        <div class="chat-container">
+          <div class="chat-header">
+            <div class="chat-avatar-wrap">
+              <div class="chat-avatar">GEM</div>
+              <div class="chat-online"></div>
+            </div>
+            <div class="chat-info">
+              <div class="chat-name">GEM AI Assistant</div>
+              <div class="chat-status">🟢 Online · Handling 3 conversations</div>
+            </div>
+            <span style="color:rgba(255,255,255,0.6);font-size:11px">WhatsApp Business</span>
+          </div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div id="crm-badge" class="crm-badge">✅ Test Drive saved to CRM automatically</div>
+          <div class="chat-input-bar">
+            <input type="text" placeholder="Type a message…" id="chat-input" onkeydown="if(event.key==='Enter')sendUserMsg()">
+            <button class="send-btn" onclick="sendUserMsg()">➤</button>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="restartChat()">↺ Replay Demo</button>
+          <span class="badge badge-green" style="font-size:11px">✅ CRM Synced</span>
+          <span class="badge badge-gold" style="font-size:11px">⚡ AI Powered</span>
+        </div>
+      </div>
+      <div style="flex:1;min-width:280px;display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">AI Performance — May 2024</div>
+          ${[['Conversations handled','342','↑ 28%','var(--blue)'],['Leads qualified','87','↑ 19%','var(--green)'],['Test drives booked','23','↑ 35%','var(--gold)'],['Avg response time','< 8 sec','—','var(--purple)']].map(([l,v,c,col]) => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:13px;color:var(--text2)">${l}</span>
+            <div style="text-align:right">
+              <div style="font-size:16px;font-weight:700;color:${col}">${v}</div>
+              <div style="font-size:11px;color:var(--green)">${c}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px">Trained On</div>
+          ${['All 47 inventory vehicles','Pricing & availability','Showroom locations & hours','Financing options','VIP client preferences'].map(i => `
+          <div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--text2)">
+            <span style="color:var(--green)">✓</span> ${i}
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+
+  if (!aiPlayed) {
+    aiPlayed = true;
+    playAIConversation();
+  }
+}
+
+const AI_CONVERSATION = [
+  { role:'user', text:'Hi, I\'m interested in the Rolls-Royce Ghost, what\'s the price?', delay:800 },
+  { role:'bot', text:'Good evening! 🌟 The Rolls-Royce Ghost starts from <strong>AED 1,200,000</strong>. It features a 6.75L twin-turbo V12, 563 hp, Starlight Headliner, and bespoke interior crafted at Goodwood. We have it available in Midnight Blue. Would you like to know more?', delay:2500 },
+  { role:'user', text:'Can I arrange a test drive this week?', delay:1500 },
+  { role:'bot', text:'Of course! 🚗 I have availability:<br><br><strong>Thursday</strong> at 2:00 PM<br><strong>Friday</strong> at 11:00 AM<br><br>Both at our <strong>Sheikh Zayed Road</strong> showroom. Which works for you?', delay:3000 },
+  { role:'user', text:'Thursday 2pm', delay:1200 },
+  { role:'bot', text:'Perfect! I\'ve booked your test drive for <strong>Thursday at 2:00 PM</strong> ✅<br><br>Your name and contact number?', delay:2500 },
+  { role:'user', text:'Ahmed Al Rashid, +971 50 123 4567', delay:1500 },
+  { role:'bot', text:'Thank you, Ahmed! 👋<br><br>Test drive confirmed:<br>📅 Thursday, 29 May at 2:00 PM<br>🚗 Rolls-Royce Ghost 2024<br>📍 Sheikh Zayed Road Showroom<br><br>Our team will contact you to confirm. See you Thursday! 🤝', delay:3000, crm:true },
+];
+
+function playAIConversation() {
+  const container = document.getElementById('chat-messages');
+  if (!container) return;
+  container.innerHTML = '';
+  let totalDelay = 0;
+
+  AI_CONVERSATION.forEach((msg, i) => {
+    totalDelay += msg.delay;
+    const typingDelay = totalDelay;
+    const showDelay = totalDelay + (msg.role === 'bot' ? 1200 : 0);
+
+    if (msg.role === 'bot') {
+      setTimeout(() => {
+        if (!document.getElementById('chat-messages')) return;
+        const typingEl = document.createElement('div');
+        typingEl.className = 'msg-wrap bot';
+        typingEl.id = 'typing-' + i;
+        typingEl.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+        container.appendChild(typingEl);
+        container.scrollTop = container.scrollHeight;
+      }, typingDelay);
+    }
+
+    setTimeout(() => {
+      const c = document.getElementById('chat-messages');
+      if (!c) return;
+      const typing = document.getElementById('typing-' + i);
+      if (typing) typing.remove();
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap ' + msg.role;
+      const now = new Date();
+      const t = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+      wrap.innerHTML = `<div class="msg-bubble">${msg.text}</div><div class="msg-time">${t}</div>`;
+      c.appendChild(wrap);
+      c.scrollTop = c.scrollHeight;
+      if (msg.crm) {
+        setTimeout(() => {
+          const badge = document.getElementById('crm-badge');
+          if (badge) badge.classList.add('show');
+        }, 800);
+      }
+    }, showDelay);
+
+    totalDelay = showDelay + 200;
+  });
+}
+
+function restartChat() {
+  aiPlayed = false;
+  const badge = document.getElementById('crm-badge');
+  if (badge) badge.classList.remove('show');
+  const c = document.getElementById('chat-messages');
+  if (c) c.innerHTML = '';
+  playAIConversation();
+}
+
+function sendUserMsg() {
+  const input = document.getElementById('chat-input');
+  if (!input || !input.value.trim()) return;
+  const c = document.getElementById('chat-messages');
+  if (!c) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap user';
+  const now = new Date();
+  const t = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  wrap.innerHTML = `<div class="msg-bubble">${input.value}</div><div class="msg-time">${t}</div>`;
+  c.appendChild(wrap);
+  c.scrollTop = c.scrollHeight;
+  input.value = '';
+  setTimeout(() => {
+    const typingWrap = document.createElement('div');
+    typingWrap.className = 'msg-wrap bot';
+    typingWrap.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+    c.appendChild(typingWrap);
+    c.scrollTop = c.scrollHeight;
+    setTimeout(() => {
+      typingWrap.remove();
+      const r = document.createElement('div');
+      r.className = 'msg-wrap bot';
+      r.innerHTML = `<div class="msg-bubble">Thank you for your message! One of our specialists will get back to you shortly. 🌟</div><div class="msg-time">${t}</div>`;
+      c.appendChild(r);
+      c.scrollTop = c.scrollHeight;
+    }, 1800);
+  }, 600);
+}
+
+// ────────────────────────────────────────────────────────────────
+// FINANCE
+// ────────────────────────────────────────────────────────────────
+function renderFinance() {
+  const revData = [5.8, 7.2, 6.5, 9.1, 8.7, 8.2];
+  const maxRev = Math.max(...revData);
+  const months = ['Dec','Jan','Feb','Mar','Apr','May'];
+
+  const bars = revData.map((v, i) => {
+    const h = Math.round((v / maxRev) * 120);
+    return `<div class="fin-bar-wrap"><div class="fin-bar-val">${v}M</div><div class="fin-bar" style="height:${h}px"></div><div class="fin-bar-label">${months[i]}</div></div>`;
+  }).join('');
+
+  // Pie chart via conic-gradient
+  const brands = [
+    { name:'Rolls-Royce', pct:28, color:'#c9a84c' },
+    { name:'Bentley', pct:20, color:'#3b82f6' },
+    { name:'Lamborghini', pct:17, color:'#22c55e' },
+    { name:'Mercedes', pct:14, color:'#a855f7' },
+    { name:'Ferrari', pct:12, color:'#ef4444' },
+    { name:'Others', pct:9, color:'#f97316' },
+  ];
+  let cumulative = 0;
+  const pieSegments = brands.map(b => {
+    const start = cumulative;
+    cumulative += b.pct;
+    return `${b.color} ${start}% ${cumulative}%`;
+  }).join(', ');
+
+  const legend = brands.map(b => `
+    <div class="pie-item">
+      <div class="pie-dot" style="background:${b.color}"></div>
+      <div class="pie-item-label">${b.name}</div>
+      <div class="pie-item-pct" style="margin-left:8px">${b.pct}%</div>
+    </div>`).join('');
+
+  document.getElementById('view-finance').innerHTML = `
+    <div class="section-title" style="margin-bottom:4px">Finance Overview</div>
+    <div class="section-sub">May 2024 · Gulf Elite Motors Group</div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Gross Revenue MTD</div>
+        <div class="kpi-value gold">AED 8.2M</div>
+        <div class="kpi-change">↑ 18% vs target</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Net Revenue MTD</div>
+        <div class="kpi-value">AED 6.9M</div>
+        <div class="kpi-change">↑ 15% vs last month</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Deal Size</div>
+        <div class="kpi-value">AED 863K</div>
+        <div class="kpi-change">↑ 7% vs Q1 avg</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Best Salesperson</div>
+        <div class="kpi-value" style="font-size:16px">Sultan A.</div>
+        <div class="kpi-change">AED 3.0M · 8 deals</div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Revenue — Last 6 Months</div><div class="card-sub">AED Millions</div></div>
+        </div>
+        <div class="fin-chart">${bars}</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Units Sold by Brand</div><div class="card-sub">May 2024</div></div>
+        </div>
+        <div class="pie-chart-wrap" style="margin-top:10px">
+          <div class="pie-chart" style="background:conic-gradient(${pieSegments})"></div>
+          <div class="pie-legend">${legend}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">Revenue by Showroom</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        ${[['Sheikh Zayed Road','AED 4.1M',50],['Dubai Marina','AED 2.5M',31],['DIFC','AED 1.6M',19]].map(([loc,rev,pct]) => `
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:13px;color:var(--text);font-weight:500">📍 ${loc}</span>
+            <span style="font-size:13px;font-weight:700;color:var(--gold)">${rev}</span>
+          </div>
+          <div class="progress"><div class="progress-bar" style="width:${pct}%"></div></div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ────────────────────────────────────────────────────────────────
+// LIVE NOTIFICATIONS
+// ────────────────────────────────────────────────────────────────
+let toastIdx = 0;
+function startLiveToasts() {
+  setInterval(() => {
+    showToast(TOAST_POOL[toastIdx % TOAST_POOL.length], '📲 Live Lead');
+    toastIdx++;
+  }, 8000);
+}
+
+// ────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────
+function initApp() {
+  renderView('dashboard');
+  startLiveToasts();
+  // Show welcome toast after short delay
+  setTimeout(() => showToast('Welcome back, Sultan. You have 12 active leads today. 🔥', '👋 Good Evening'), 1500);
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
