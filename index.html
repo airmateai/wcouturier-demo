@@ -1698,7 +1698,7 @@ function renderOrders() {
           <div class="kanban-card" draggable="true" data-id="${o.id}" ondragstart="dragOrder(event,'${o.id}')" ondragend="document.querySelectorAll('.kanban-col').forEach(c=>c.style.outline='')">
             <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
               <div class="kanban-card-name">${esc(o.client)}</div>
-              <button onclick="deleteOrder('${o.id}')" style="background:none;border:none;color:#475569;cursor:pointer;font-size:11px;padding:0">✕</button>
+              <button draggable="false" onclick="event.stopPropagation();deleteOrder('${o.id}')" style="background:none;border:none;color:#475569;cursor:pointer;font-size:11px;padding:0">✕</button>
             </div>
             <div class="kanban-card-item">${esc(o.item)}</div>
             <div class="kanban-card-fabric">${esc(o.fabric)}</div>
@@ -1707,7 +1707,7 @@ function renderOrders() {
               <div style="font-size:10.5px;color:var(--txt3)">${fmtDate(o.delivery)}</div>
             </div>
             <div style="margin-top:6px">
-              <button onclick="openSuitDesigner('${o.id}')" style="width:100%;background:var(--gold);color:#000;border:none;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.5px">✦ Design</button>
+              <button draggable="false" onclick="event.stopPropagation();openSuitDesigner('${o.id}')" style="width:100%;background:var(--gold);color:#000;border:none;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.5px">✦ Design</button>
             </div>
           </div>`).join('')}
       </div>
