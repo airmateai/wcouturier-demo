@@ -1001,6 +1001,67 @@ html.dark .dark-toggle::after{left:19px;}
             </div>
           </div>
 
+        <!-- APPOINTMENTS -->
+        <div id="pane-appointments" class="tab-pane">
+          <div class="page-hd page-hd-row">
+            <div><div class="page-title">Appointments</div><div class="page-sub">All upcoming &amp; past appointments</div></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <input id="appt-search" placeholder="🔍 Search..." style="border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;background:var(--bg2);color:var(--txt1);width:160px" oninput="renderAppts()">
+              <select id="appt-status" style="border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;background:var(--bg2);color:var(--txt1)" onchange="renderAppts()">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <input id="appt-date" type="date" style="border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;background:var(--bg2);color:var(--txt1)" onchange="renderAppts()">
+              <button class="btn btn-accent" onclick="openApptModal()">+ New Appointment</button>
+            </div>
+          </div>
+          <div class="card" style="overflow-x:auto">
+            <table class="data-table"><thead><tr>
+              <th>Client</th><th>Type</th><th>Date &amp; Time</th><th>Branch</th><th>Status</th><th>Source</th><th>Actions</th>
+            </tr></thead><tbody id="appt-tbody"></tbody></table>
+          </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div id="pane-orders" class="tab-pane">
+          <div class="page-hd page-hd-row">
+            <div><div class="page-title">Orders</div><div class="page-sub">Bespoke order pipeline — drag to update stage</div></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input placeholder="🔍 Search orders..." style="border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;background:var(--bg2);color:var(--txt1);width:180px" oninput="_ordersFilter=this.value.toLowerCase();renderOrders()">
+              <button class="btn btn-accent" onclick="openOrderModal()">+ New Order</button>
+            </div>
+          </div>
+          <div id="orders-kanban" class="kanban-board"></div>
+        </div>
+
+        <!-- CLIENTS -->
+        <div id="pane-clients" class="tab-pane">
+          <div class="page-hd page-hd-row">
+            <div><div class="page-title">Client Book</div><div class="page-sub">All clients — measurements, history &amp; preferences</div></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input placeholder="🔍 Search clients..." style="border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;background:var(--bg2);color:var(--txt1);width:200px" oninput="filterClients(this.value)">
+              <button class="btn btn-accent" onclick="openClientModal()">+ Add Client</button>
+            </div>
+          </div>
+          <div id="clients-grid" class="clients-grid"></div>
+        </div>
+
+        <!-- FABRICS -->
+        <div id="pane-fabrics" class="tab-pane">
+          <div class="page-hd page-hd-row">
+            <div><div class="page-title">Fabric Inventory</div><div class="page-sub">Stock levels, suppliers &amp; low-stock alerts</div></div>
+            <button class="btn btn-accent" onclick="openFabricModal()">+ Add Fabric</button>
+          </div>
+          <div class="card" style="overflow-x:auto">
+            <table class="data-table"><thead><tr>
+              <th>Name</th><th>Type</th><th>Colour</th><th>Stock</th><th>Min</th><th>Supplier</th><th>Price/m</th><th>Actions</th>
+            </tr></thead><tbody id="fabrics-tbody"></tbody></table>
+          </div>
+        </div>
+
         <!-- TPV / SALES -->
         <div id="pane-tpv" class="tab-pane">
           <div class="page-hd page-hd-row">
