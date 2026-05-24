@@ -2447,7 +2447,7 @@ function openSuitDesigner(orderId){
     const sw=document.getElementById('suit-swatches');
     if(sw&&typeof SUIT_FABRICS!=='undefined') sw.innerHTML=SUIT_FABRICS.map((f,i)=>`
       <div class="suit-swatch${i===_suit.fabric?' active':''}" style="background:${f.main}" title="${f.name}" onclick="setSuitFabric(${i})">
-        <img src="${f.img||''}" alt="${f.name}" onerror="this.style.display='none'">
+        <img src="${f.img||''}" alt="${f.name}" style="width:100%;height:100%;object-fit:cover">
         <span class="suit-swatch-label">${f.name}</span>
       </div>`).join('');
   }catch(e){}
@@ -2469,7 +2469,7 @@ function openSuitDesigner(orderId){
   const ov=document.getElementById('suit-overlay');
   if(ov){ov.style.display='flex';ov.classList.add('open');}
 }
-function closeSuit(){document.getElementById('suit-overlay').classList.remove('open');}
+function closeSuit(){const ov=document.getElementById('suit-overlay');if(ov){ov.classList.remove('open');ov.style.display='none';}}
 function setSuitFabric(i){
   _suit.fabric=i;
   document.querySelectorAll('#suit-swatches .suit-swatch').forEach((el,j)=>el.classList.toggle('active',j===i));
