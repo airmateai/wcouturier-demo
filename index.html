@@ -300,6 +300,18 @@ tbody td{padding:12px 14px;font-size:13px;color:var(--txt);vertical-align:middle
 .badge-purple{background:rgba(139,92,246,0.12);color:#a78bfa;}
 .badge-grey{background:rgba(255,255,255,0.06);color:var(--txt2);}
 
+/* ── CALENDAR ───────────────────────────────────────── */
+.cal-grid{display:grid;grid-template-columns:60px repeat(7,1fr);border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);}
+.cal-day-header{padding:10px 6px;text-align:center;font-size:11px;font-weight:600;color:var(--txt2);border-bottom:1px solid var(--border);background:var(--surface2);letter-spacing:.5px;}
+.cal-day-header.today{color:var(--gold);}
+.cal-time-label{padding:6px 8px;font-size:10px;color:var(--txt3);text-align:right;border-right:1px solid var(--border);line-height:1;}
+.cal-cell{border-left:1px solid var(--border);border-bottom:1px solid var(--border);min-height:44px;position:relative;padding:2px;}
+.cal-cell.today{background:rgba(184,150,58,0.04);}
+.cal-event{border-radius:5px;padding:3px 6px;font-size:10.5px;font-weight:500;cursor:pointer;margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.cal-event.confirmed{background:rgba(34,197,94,0.18);color:#4ade80;border-left:2px solid #22c55e;}
+.cal-event.pending{background:rgba(251,191,36,0.18);color:#fbbf24;border-left:2px solid #f59e0b;}
+.cal-corner{background:var(--surface2);border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+
 /* ── SUIT DESIGNER ─────────────────────────────────── */
 .ds-section-label{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;font-weight:500;}
 .ds-option{
@@ -933,16 +945,27 @@ tbody td{padding:12px 14px;font-size:13px;color:var(--txt);vertical-align:middle
           <h1>Appointments</h1>
           <p>Upcoming schedule — W Couturier Group · The Palace</p>
         </div>
-        <div class="quick-actions">
+        <div class="quick-actions" style="flex-wrap:wrap;gap:8px">
           <button class="qa-btn" onclick="openModal('modal-new-appt')"><i class="fas fa-plus"></i> New Appointment</button>
-          <input id="appt-search" placeholder="🔍 Search client..." style="padding:7px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--txt1);font-size:13px;width:200px" oninput="renderAppointments()">
+          <input id="appt-search" placeholder="🔍 Search client..." style="padding:7px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--txt1);font-size:13px;width:180px" oninput="renderAppointments()">
           <select id="appt-filter" style="padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--txt1);font-size:13px" onchange="renderAppointments()">
             <option value="">All Status</option>
             <option value="confirmed">Confirmed</option>
             <option value="pending">Pending</option>
           </select>
+          <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-left:auto">
+            <button id="cal-view-btn" onclick="setCalView('cal')" style="padding:7px 14px;background:var(--gold);color:#000;border:none;cursor:pointer;font-size:12px;font-weight:600">📅 Calendar</button>
+            <button id="list-view-btn" onclick="setCalView('list')" style="padding:7px 14px;background:var(--surface2);color:var(--txt2);border:none;cursor:pointer;font-size:12px">☰ List</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button onclick="calPrevWeek()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--txt);cursor:pointer;font-size:13px">‹</button>
+            <span id="cal-week-label" style="font-size:13px;color:var(--txt);min-width:160px;text-align:center"></span>
+            <button onclick="calNextWeek()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--txt);cursor:pointer;font-size:13px">›</button>
+          </div>
         </div>
-        <div class="card">
+        <!-- Calendar view -->
+        <div id="appt-calendar" style="display:block;margin-bottom:20px"></div>
+        <div class="card" id="appt-list-card" style="display:none">
           <div class="card-header">
             <h3>All Appointments</h3>
             <span id="appt-count">16 entries</span>
@@ -1584,6 +1607,7 @@ function switchPane(el) {
   };
   if(renderMap[target]) renderMap[target]();
   if(target==='designer') initDesigner();
+  if(target==='appointments' && _calView==='cal') renderCalendar();
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -2304,6 +2328,76 @@ const PATTERN_RENDERS={
 };
 
 let _suit={fabric:0,lapel:'notch',buttons:'2',fit:'regular',lining:0,tie:0,vent:'double',trouser:'flat',sleeveBtn:'4',pocket:'jetted',orderId:null};
+
+/* ══ CALENDAR ═══════════════════════════════════════════════════════════ */
+let _calView = 'cal';
+let _calOffset = 0;
+
+function setCalView(v) {
+  _calView = v;
+  const cb = document.getElementById('cal-view-btn');
+  const lb = document.getElementById('list-view-btn');
+  if(cb){cb.style.background=v==='cal'?'var(--gold)':'var(--surface2)';cb.style.color=v==='cal'?'#000':'var(--txt2)';}
+  if(lb){lb.style.background=v==='list'?'var(--gold)':'var(--surface2)';lb.style.color=v==='list'?'#000':'var(--txt2)';}
+  const cal=document.getElementById('appt-calendar');
+  const lst=document.getElementById('appt-list-card');
+  if(cal) cal.style.display=v==='cal'?'block':'none';
+  if(lst) lst.style.display=v==='list'?'block':'none';
+  if(v==='cal') renderCalendar();
+}
+
+function calPrevWeek(){ _calOffset--; renderCalendar(); }
+function calNextWeek(){ _calOffset++; renderCalendar(); }
+
+function getWeekStart(offset) {
+  const base = new Date(2026,4,24);
+  const dow = (base.getDay()+6)%7;
+  const mon = new Date(base);
+  mon.setDate(base.getDate()-dow+offset*7);
+  return mon;
+}
+
+function renderCalendar() {
+  const container = document.getElementById('appt-calendar');
+  if(!container) return;
+  const ws = getWeekStart(_calOffset);
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);days.push(d);}
+  const todayStr='2026-05-24';
+  const lbl=document.getElementById('cal-week-label');
+  if(lbl) lbl.textContent=days[0].toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' — '+days[6].toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const hours=[];
+  for(let h=8;h<=19;h++) hours.push(h);
+  const dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const statusColor={confirmed:'#22c55e',pending:'#f59e0b'};
+  const typeBg={confirmed:'rgba(34,197,94,0.15)',pending:'rgba(251,191,36,0.15)'};
+  let out='<div class="cal-grid">';
+  out+='<div class="cal-corner" style="background:var(--surface2);border-bottom:1px solid var(--border);border-right:1px solid var(--border);padding:8px"></div>';
+  days.forEach((d,i)=>{
+    const ds=d.toISOString().slice(0,10);
+    const isT=ds===todayStr;
+    out+=`<div class="cal-day-header${isT?' today':''}"><div style="font-size:10px;letter-spacing:1px">${dn[i]}</div><div style="font-size:18px;font-weight:${isT?700:400};color:${isT?'var(--gold)':'var(--txt)'};line-height:1.4">${d.getDate()}</div></div>`;
+  });
+  hours.forEach(h=>{
+    const timeStr=String(h).padStart(2,'0')+':00';
+    out+=`<div class="cal-time-label">${timeStr}</div>`;
+    days.forEach(d=>{
+      const ds=d.toISOString().slice(0,10);
+      const isT=ds===todayStr;
+      const appts=APPOINTMENTS.filter(a=>a.date===ds&&parseInt(a.time)===h);
+      out+=`<div class="cal-cell${isT?' today':''}">`;
+      appts.forEach(a=>{
+        const c=statusColor[a.status]||'#888';
+        const bg=typeBg[a.status]||'rgba(100,100,100,0.1)';
+        out+=`<div class="cal-event ${a.status}" onclick="showToast('${a.client} · ${a.type} · ${a.time}')" title="${a.client} — ${a.type}">${a.time.slice(0,5)} <b>${a.client.split(' ')[0]}</b><br><span style="font-size:9px;opacity:.7">${a.type}</span></div>`;
+      });
+      out+='</div>';
+    });
+  });
+  out+='</div>';
+  container.innerHTML=out;
+}
+
 function openSuitDesigner(orderId){
   _suit.orderId=orderId;
   // Inject lapel images (base64)
