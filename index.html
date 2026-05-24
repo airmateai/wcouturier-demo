@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
@@ -3934,12 +3934,13 @@ function toggleTheme(){
 (function(){
   try{
     const t = localStorage.getItem('hot-theme');
-    if(t){ document.documentElement.setAttribute('data-theme',t);
-      window.addEventListener('DOMContentLoaded',()=>{
-        const btn=document.getElementById('theme-toggle');
-        if(btn) btn.textContent = t==='dark' ? '☀️ Light mode' : '🌙 Dark mode';
-      });
-    }
+    if(t==='light'){ document.documentElement.classList.remove('dark'); }
+    else { document.documentElement.classList.add('dark'); }
+    window.addEventListener('DOMContentLoaded',()=>{
+      const btn=document.getElementById('theme-toggle');
+      const isDark=document.documentElement.classList.contains('dark');
+      if(btn) btn.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+    });
   }catch(e){}
 })();
 
